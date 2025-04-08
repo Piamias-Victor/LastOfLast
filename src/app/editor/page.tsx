@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Editor from "@/components/Editor";
-import PropertiesPanel from "@/components/panels/PropertiesPanel";
+import { PropertiesPanel } from "@/features/properties";
 
 export default function EditorPage() {
   return (

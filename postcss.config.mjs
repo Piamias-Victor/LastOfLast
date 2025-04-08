@@ -1,5 +1,7 @@
-const config = {
-  plugins: ["@tailwindcss/postcss"],
-};
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+  swcMinify: true,
+}
 
-export default config;
+export default nextConfig;

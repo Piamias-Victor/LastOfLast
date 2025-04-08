@@ -1,9 +1,9 @@
 import { useState, useCallback } from 'react';
-import { ElementOperation } from '@/states/editorStore';
 import { ResizeHandle, Vector2D } from '@/types/geometry';
 import { AnyPlanElement } from '@/types/elements';
 import { getCursor as getBaseCursor } from '@/lib/utils/cursorUtils';
 import { ElementDetectionResult } from '../types';
+import { ElementOperation } from '@/store';
 
 /**
  * Hook pour gérer le curseur en fonction des interactions

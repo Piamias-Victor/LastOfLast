@@ -1,7 +1,7 @@
-import { ElementOperation } from '@/states/editorStore';
 import { Vector2D, ResizeHandle } from '@/types/geometry';
 import { AnyPlanElement } from '@/types/elements';
 import { ElementDetectionResult } from '../types';
+import { ElementOperation } from '@/store';
 
 /**
  * Détermine l'opération à effectuer en fonction du clic

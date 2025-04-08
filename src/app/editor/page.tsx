@@ -1,8 +1,9 @@
 import Link from "next/link";
-import Editor from "@/components/Editor";
+import { Editor } from "@/features/editor";
 import { PropertiesPanel } from "@/features/properties";
 
 export default function EditorPage() {
+  // Le reste du code reste inchangé
   return (
     <main className="flex min-h-screen flex-col">
       <header className="flex h-14 items-center border-b px-4 lg:px-6 bg-white shadow-sm">

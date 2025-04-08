@@ -24,12 +24,7 @@ export const initialEditorState: EditorState = {
 /**
  * Créateur de slice pour l'état de l'éditeur
  */
-export const createEditorSlice: StateCreator
-  RootState,
-  [],
-  [],
-  EditorState
-> = (set) => ({
+export const createEditorSlice: StateCreator<RootState, [], [], EditorState> = (set) => ({
   ...initialEditorState,
   
   toggleGrid: () =>

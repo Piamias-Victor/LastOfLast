@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { Vector2D } from '@/types/geometry';
-import { useEditorStore } from '@/states/editorStore';
 import { CoordinateConversionResult } from '../types';
+import { useEditorStore } from '@/store';
 
 /**
  * Hook pour convertir les coordonnées entre l'écran et le canvas

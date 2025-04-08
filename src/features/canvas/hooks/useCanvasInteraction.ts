@@ -1,5 +1,4 @@
 import { useCallback, useRef } from 'react';
-import { useEditorStore, ElementOperation } from '@/states/editorStore';
 import { UseCanvasInteractionProps, CanvasInteractionResult } from '../types';
 import { useCoordinateConversion } from './useCoordinateConversion';
 import { useElementDetection } from './useElementDetection';
@@ -7,6 +6,7 @@ import { useElementOperation } from './useElementOperation';
 import { useSelectionBox } from './useSelectionBox';
 import { useCursor } from '../utils/cursorUtils';
 import { determineOperation } from '../utils/operationUtils';
+import { useEditorStore, ElementOperation } from '@/store';
 
 /**
  * Hook principal pour gérer les interactions avec le canvas

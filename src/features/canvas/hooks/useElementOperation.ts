@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import { ResizeHandle, Vector2D } from '@/types/geometry';
 import { AnyPlanElement } from '@/types/elements';
-import { useEditorStore } from '@/states/editorStore';
 import { snapPointToGrid } from '@/lib/utils';
 import { 
   calculateResizeValues, 
@@ -9,6 +8,7 @@ import {
   applyGridToResizeValues 
 } from '../utils/resizeUtils';
 import { ElementOperationResult } from '../types';
+import { useEditorStore } from '@/store';
 
 /**
  * Hook pour gérer les opérations sur les éléments (déplacement, redimensionnement)

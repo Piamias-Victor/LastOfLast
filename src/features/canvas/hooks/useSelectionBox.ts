@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { Vector2D } from '@/types/geometry';
-import { drawMultiSelectionBox } from '@/lib/canvas/drawUtils';
 import { SelectionBoxResult, SelectionBox } from '../types';
+import { drawMultiSelectionBox } from '@/features/drawing';
 
 /**
  * Hook pour gérer la boîte de sélection sur le canvas

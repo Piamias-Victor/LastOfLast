@@ -2,7 +2,6 @@ import { StateCreator } from 'zustand';
 import { produce } from 'immer';
 import { RootState } from '../types';
 import { OperationsState, ElementOperation } from '../types/operations';
-import { Vector2D, ResizeHandle } from '@/types/geometry';
 
 /**
  * Valeurs initiales pour l'état des opérations
@@ -20,12 +19,7 @@ export const initialOperationsState: OperationsState = {
 /**
  * Créateur de slice pour l'état des opérations
  */
-export const createOperationsSlice: StateCreator
-  RootState,
-  [],
-  [],
-  OperationsState
-> = (set) => ({
+export const createOperationsSlice: StateCreator<RootState, [], [], OperationsState> = (set) => ({
   ...initialOperationsState,
 
   startOperation: (operation, startPoint, resizeHandle = null) =>

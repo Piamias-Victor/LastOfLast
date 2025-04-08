@@ -3,7 +3,7 @@ import { produce } from 'immer';
 import { RootState } from '../types';
 import { ElementsState } from '../types/elements';
 import { generateId } from '@/lib/utils';
-import { AnyPlanElement, BasePlanElement } from '@/types/elements';
+import { AnyPlanElement } from '@/types/elements';
 
 /**
  * Valeurs initiales pour l'état des éléments
@@ -25,12 +25,7 @@ export const initialElementsState: ElementsState = {
 /**
  * Créateur de slice pour l'état des éléments
  */
-export const createElementsSlice: StateCreator
-  RootState,
-  [],
-  [],
-  ElementsState
-> = (set) => ({
+export const createElementsSlice: StateCreator<RootState, [], [], ElementsState> = (set) => ({
   ...initialElementsState,
 
   addElement: (element) =>

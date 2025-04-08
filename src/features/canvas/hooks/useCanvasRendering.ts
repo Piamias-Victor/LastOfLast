@@ -2,9 +2,11 @@
 
 import { useEffect } from 'react';
 import { DEFAULT_EDITOR_CONFIG, EDITOR_COLORS } from '@/lib/constants/editor';
-import { drawElements, drawMultiSelectionBox } from '@/lib/canvas/drawUtils';
 import { AnyPlanElement } from '@/types/elements';
-import { SelectionBox, Vector2D } from '@/types/geometry';
+import { drawMultiSelectionBox } from '@/features/drawing';
+import { Vector2D } from '@/types/geometry';
+import { SelectionBox } from '../types';
+import { drawElements } from '@/features/drawing/utils/drawElements';
 
 interface UseCanvasRenderingProps {
   canvasRef: React.RefObject<HTMLCanvasElement>;

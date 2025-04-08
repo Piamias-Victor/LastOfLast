@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useEditorStore } from '@/states/editorStore';
 import { ElementType, RectangleElement } from '@/types/elements';
+import { useEditorStore } from '@/store';
 
 /**
  * Hook pour initialiser le canvas avec un élément rectangle par défaut

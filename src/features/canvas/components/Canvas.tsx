@@ -1,13 +1,13 @@
 'use client';
 
 import React, { useRef, useState, useEffect } from 'react';
-import { useEditorStore } from '@/states/editorStore';
 import { useCanvasInteraction } from '@/features/canvas/hooks/useCanvasInteraction';
 import { useCanvasZoom } from '@/features/canvas/hooks/useCanvasZoom';
 import { useCanvasRendering } from '@/features/canvas/hooks/useCanvasRendering';
 import { useCanvasSetup } from '@/features/canvas/hooks/useCanvasSetup';
 import CanvasTools from './CanvasTools';
 import CanvasFooter from './CanvasFooter';
+import { useEditorStore } from '@/store';
 
 interface CanvasProps {
   width?: number;

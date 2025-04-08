@@ -1,4 +1,4 @@
-import { ElementOperation } from '@/states/editorStore';
+import { ElementOperation } from '@/store';
 import { ResizeHandle } from '@/types/geometry';
 
 /**

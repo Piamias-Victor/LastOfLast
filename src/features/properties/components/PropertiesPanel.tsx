@@ -1,11 +1,11 @@
 'use client';
 
 import React from 'react';
-import { useEditorStore } from '@/states/editorStore';
 import { ElementType } from '@/types/elements';
 import NoSelectionPanel from './NoSelectionPanel';
 import MultiSelectionPanel from './MultiSelectionPanel';
 import RectanglePropertiesPanel from './RectanglePropertiesPanel';
+import { useEditorStore } from '@/store';
 
 /**
  * Panneau principal des propriétés qui affiche le panneau approprié selon la sélection

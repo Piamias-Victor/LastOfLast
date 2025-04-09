@@ -10,12 +10,14 @@ import {
 import { ElementOperationResult } from '../types';
 import { useEditorStore } from '@/store';
 import { snapAngleToInterval, rotatePoint, rotateVector } from '@/lib/utils/rotationUtils';
+import { useAlignment } from '@/features/alignment';
 
 /**
  * Hook pour gérer les opérations sur les éléments (déplacement, redimensionnement, rotation)
  */
 export function useElementOperation(): ElementOperationResult {
   const { elements, updateElement, snapToGrid, gridSize } = useEditorStore();
+  const { checkAlignment, clearGuides } = useAlignment();
 
   /**
    * Déplace un élément
@@ -42,19 +44,22 @@ export function useElementOperation(): ElementOperationResult {
       newY = snapPointToGrid({ x: 0, y: newY }, gridSize).y;
     }
     
+    // Appliquer l'alignement automatique
+    const alignedPosition = checkAlignment(elementId, { x: newX, y: newY });
+    
     // Mettre à jour l'élément
     updateElement(elementId, {
       bounds: {
         ...element.bounds,
-        x: newX,
-        y: newY,
+        x: alignedPosition.x,
+        y: alignedPosition.y,
       },
       transform: {
         ...element.transform,
-        position: { x: newX, y: newY },
+        position: { x: alignedPosition.x, y: alignedPosition.y },
       },
     });
-  }, [elements, updateElement, snapToGrid, gridSize]);
+  }, [elements, updateElement, snapToGrid, gridSize, checkAlignment]);
 
   /**
    * Déplace plusieurs éléments
@@ -96,7 +101,10 @@ export function useElementOperation(): ElementOperationResult {
         },
       });
     });
-  }, [elements, updateElement, snapToGrid, gridSize]);
+    
+    // Effacer les guides d'alignement (on ne les utilise pas pour la sélection multiple)
+    clearGuides();
+  }, [elements, updateElement, snapToGrid, gridSize, clearGuides]);
 
   /**
    * Redimensionne un élément en tenant compte de sa rotation
@@ -207,7 +215,10 @@ export function useElementOperation(): ElementOperationResult {
         position: { x: newX, y: newY },
       },
     });
-  }, [updateElement, snapToGrid, gridSize]);
+    
+    // Effacer les guides d'alignement (on ne les utilise pas pour le redimensionnement)
+    clearGuides();
+  }, [updateElement, snapToGrid, gridSize, clearGuides]);
 
   /**
    * Fait pivoter un élément
@@ -244,7 +255,10 @@ export function useElementOperation(): ElementOperationResult {
         rotation: newRotation,
       },
     });
-  }, [updateElement]);
+    
+    // Effacer les guides d'alignement (on ne les utilise pas pour la rotation)
+    clearGuides();
+  }, [updateElement, clearGuides]);
 
   return {
     moveElement,

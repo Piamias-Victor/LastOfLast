@@ -21,6 +21,9 @@ export interface ElementsStateActions {
   /** Supprime un élément par son ID */
   removeElement: (id: string) => void;
   
+  /** Supprime les éléments sélectionnés */
+  removeSelectedElements: () => void;
+  
   /** Met à jour un élément existant */
   updateElement: (id: string, updates: Partial<BasePlanElement>) => void;
   

@@ -15,6 +15,7 @@ export const initialElementsState: ElementsState = {
   // Actions sont définies dans la création du slice
   addElement: () => {},
   removeElement: () => {},
+  removeSelectedElements: () => {},
   updateElement: () => {},
   selectElement: () => {},
   deselectElement: () => {},
@@ -46,6 +47,21 @@ export const createElementsSlice: StateCreator<RootState, [], [], ElementsState>
         state.selectedElementIds = state.selectedElementIds.filter(
           (selectedId) => selectedId !== id
         );
+      })
+    ),
+    
+  removeSelectedElements: () =>
+    set(
+      produce((state: RootState) => {
+        if (state.selectedElementIds.length === 0) return;
+        
+        // Filtrer les éléments pour ne garder que ceux qui ne sont pas sélectionnés
+        state.elements = state.elements.filter(
+          (el) => !state.selectedElementIds.includes(el.id)
+        );
+        
+        // Vider la liste des éléments sélectionnés
+        state.selectedElementIds = [];
       })
     ),
 

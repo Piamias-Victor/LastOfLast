@@ -10,7 +10,11 @@ export function useEditorKeyboardShortcuts(onDeselectAll: () => void): void {
   const { 
     selectedElementIds, 
     elements, 
-    updateElement 
+    updateElement,
+    removeSelectedElements,
+    copySelectedElements,
+    pasteElements,
+    cutSelectedElements,
   } = useEditorStore();
   
   // Utiliser une référence pour suivre si la touche R est enfoncée
@@ -18,9 +22,53 @@ export function useEditorKeyboardShortcuts(onDeselectAll: () => void): void {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Éviter d'intercepter les raccourcis clavier quand un élément d'entrée est actif
+      if (
+        document.activeElement &&
+        (document.activeElement.tagName === 'INPUT' ||
+          document.activeElement.tagName === 'TEXTAREA')
+      ) {
+        return;
+      }
+
       // Échap pour désélectionner tout
       if (e.key === 'Escape') {
         onDeselectAll();
+        return;
+      }
+      
+      // Delete ou Backspace pour supprimer les éléments sélectionnés
+      if (e.key === 'Delete' || e.key === 'Backspace') {
+        // Empêcher la navigation arrière du navigateur avec Backspace
+        if (e.key === 'Backspace') {
+          e.preventDefault();
+        }
+        
+        // Si des éléments sont sélectionnés, les supprimer
+        if (selectedElementIds.length > 0) {
+          removeSelectedElements();
+          return;
+        }
+      }
+      
+      // Copier avec Ctrl+C ou Cmd+C
+      if ((e.ctrlKey || e.metaKey) && e.key === 'c') {
+        copySelectedElements();
+        e.preventDefault();
+        return;
+      }
+      
+      // Coller avec Ctrl+V ou Cmd+V
+      if ((e.ctrlKey || e.metaKey) && e.key === 'v') {
+        pasteElements();
+        e.preventDefault();
+        return;
+      }
+      
+      // Couper avec Ctrl+X ou Cmd+X
+      if ((e.ctrlKey || e.metaKey) && e.key === 'x') {
+        cutSelectedElements();
+        e.preventDefault();
         return;
       }
       
@@ -79,5 +127,14 @@ export function useEditorKeyboardShortcuts(onDeselectAll: () => void): void {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
     };
-  }, [onDeselectAll, selectedElementIds, elements, updateElement]);
+  }, [
+    onDeselectAll, 
+    selectedElementIds, 
+    elements, 
+    updateElement, 
+    removeSelectedElements,
+    copySelectedElements,
+    pasteElements,
+    cutSelectedElements
+  ]);
 }

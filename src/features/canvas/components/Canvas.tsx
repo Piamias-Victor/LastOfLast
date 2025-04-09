@@ -5,6 +5,7 @@ import { useCanvasInteraction } from '@/features/canvas/hooks/useCanvasInteracti
 import { useCanvasZoom } from '@/features/canvas/hooks/useCanvasZoom';
 import { useCanvasRendering } from '@/features/canvas/hooks/useCanvasRendering';
 import { useCanvasSetup } from '@/features/canvas/hooks/useCanvasSetup';
+import { useCanvasDrop } from '@/features/canvas/hooks/useCanvasDrop';
 import CanvasTools from './CanvasTools';
 import CanvasFooter from './CanvasFooter';
 import { useEditorStore } from '@/store';
@@ -99,6 +100,9 @@ const Canvas: React.FC<CanvasProps> = ({ width: propWidth, height: propHeight })
     setViewportOffset,
     canvasRef
   });
+  
+  // Hook pour gérer le drag & drop
+  const { handleDragOver, handleDrop } = useCanvasDrop(canvasRef);
 
   // Calculer les dimensions effectives du canvas
   const canvasWidth = propWidth ?? containerSize.width;
@@ -143,6 +147,8 @@ const Canvas: React.FC<CanvasProps> = ({ width: propWidth, height: propHeight })
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
             className="bg-gray-100"
             style={{ display: 'block', cursor }}
           />

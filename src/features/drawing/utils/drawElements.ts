@@ -1,7 +1,11 @@
 'use client';
 
-import { AnyPlanElement, ElementType, RectangleElement } from '@/types/elements';
+import { AnyPlanElement, ElementType, RectangleElement, CounterElement, GondolaElement, EndCapElement, BargainBinElement } from '@/types/elements';
 import { drawRectangle } from './rectangleDrawing';
+import { drawCounter } from './counterDrawing';
+import { drawGondola } from './gondolaDrawing';
+import { drawEndCap } from './endcapDrawing';
+import { drawBargainBin } from './bargainBinDrawing';
 import { DrawElementsOptions } from '../types';
 
 /**
@@ -30,6 +34,18 @@ export function drawElements(
     switch (element.type) {
       case ElementType.RECTANGLE:
         drawRectangle(context, element as RectangleElement, isSelected);
+        break;
+      case ElementType.COUNTER:
+        drawCounter(context, element as CounterElement, isSelected);
+        break;
+      case ElementType.GONDOLA:
+        drawGondola(context, element as GondolaElement, isSelected);
+        break;
+      case ElementType.END_CAP:
+        drawEndCap(context, element as EndCapElement, isSelected);
+        break;
+      case ElementType.BARGAIN_BIN:
+        drawBargainBin(context, element as BargainBinElement, isSelected);
         break;
       // D'autres types d'éléments seront ajoutés ici plus tard
       default:

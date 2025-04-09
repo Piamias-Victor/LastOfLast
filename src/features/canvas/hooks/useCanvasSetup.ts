@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { ElementType, RectangleElement } from '@/types/elements';
+import { ElementType, RectangleElement, CounterElement } from '@/types/elements';
 import { useEditorStore } from '@/store';
 
 /**
@@ -17,6 +17,7 @@ export function useCanvasSetup(): void {
       const centerX = 600 - 100; // Moitié de la largeur - moitié de la largeur du rectangle
       const centerY = 450 - 60;  // Moitié de la hauteur - moitié de la hauteur du rectangle
       
+      // Ajouter un rectangle
       addElement({
         type: ElementType.RECTANGLE,
         bounds: {
@@ -43,6 +44,37 @@ export function useCanvasSetup(): void {
         borderWidth: 2,
         cornerRadius: 10,
       } as Omit<RectangleElement, 'id'>);
+      
+      // Ajouter un comptoir
+      addElement({
+        type: ElementType.COUNTER,
+        bounds: {
+          x: centerX + 250,
+          y: centerY,
+          width: 300,
+          height: 80,
+        },
+        transform: {
+          position: { x: centerX + 250, y: centerY },
+          rotation: 0,
+          scale: { x: 1, y: 1 },
+        },
+        zIndex: 2,
+        isLocked: false,
+        isVisible: true,
+        isSelected: false,
+        metadata: {
+          name: 'Comptoir principal',
+          customProperties: {},
+        },
+        stations: 3,
+        hasStorage: true,
+        counterHeight: 90,
+        isAccessible: true,
+        backgroundColor: '#0a5b91',
+        borderColor: '#003e6b',
+        borderWidth: 2,
+      } as Omit<CounterElement, 'id'>);
     }
   }, [addElement, elements.length]);
 }

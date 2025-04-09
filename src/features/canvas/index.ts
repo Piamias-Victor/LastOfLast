@@ -4,6 +4,7 @@ export { useCoordinateConversion } from './hooks/useCoordinateConversion';
 export { useElementDetection } from './hooks/useElementDetection';
 export { useElementOperation } from './hooks/useElementOperation';
 export { useSelectionBox } from './hooks/useSelectionBox';
+export { useCanvasDrop } from './hooks/useCanvasDrop';
 
 // Types
 export type {

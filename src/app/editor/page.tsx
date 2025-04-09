@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { Editor } from "@/features/editor";
 import { PropertiesPanel } from "@/features/properties";
+import { LibraryPanel } from "@/features/library";
 
 export default function EditorPage() {
-  // Le reste du code reste inchangé
   return (
     <main className="flex min-h-screen flex-col">
       <header className="flex h-14 items-center border-b px-4 lg:px-6 bg-white shadow-sm">
@@ -24,18 +24,8 @@ export default function EditorPage() {
       </header>
       <div className="flex h-[calc(100vh-3.5rem)] w-full">
         {/* Sidebar gauche pour les outils et éléments */}
-        <div className="w-64 border-r p-4 bg-white shadow-sm">
-          <h2 className="font-semibold mb-4 text-pharmacy-primary">Éléments</h2>
-          <div className="space-y-2">
-            <div className="p-3 border rounded-md hover:bg-gray-50 cursor-pointer group">
-              <div className="w-full h-16 bg-pharmacy-secondary rounded-md group-hover:opacity-80 flex items-center justify-center text-white font-medium">
-                Rectangle
-              </div>
-              <p className="text-xs text-gray-500 mt-2">
-                Cliquez et glissez pour ajouter un rectangle
-              </p>
-            </div>
-          </div>
+        <div className="w-64 border-r bg-white shadow-sm overflow-auto">
+          <LibraryPanel />
         </div>
         
         {/* Zone principale pour le canvas */}

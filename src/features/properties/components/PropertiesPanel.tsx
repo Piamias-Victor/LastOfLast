@@ -5,6 +5,10 @@ import { ElementType } from '@/types/elements';
 import NoSelectionPanel from './NoSelectionPanel';
 import MultiSelectionPanel from './MultiSelectionPanel';
 import RectanglePropertiesPanel from './RectanglePropertiesPanel';
+import CounterPropertiesPanel from './CounterPropertiesPanel';
+import GondolaPropertiesPanel from './GondolaPropertiesPanel';
+import EndCapPropertiesPanel from './EndCapPropertiesPanel';
+import BargainBinPropertiesPanel from './BargainBinPropertiesPanel';
 import { useEditorStore } from '@/store';
 
 /**
@@ -43,6 +47,34 @@ const PropertiesPanel: React.FC = () => {
     case ElementType.RECTANGLE:
       return (
         <RectanglePropertiesPanel 
+          element={selectedElement} 
+          updateElement={updateElement} 
+        />
+      );
+    case ElementType.COUNTER:
+      return (
+        <CounterPropertiesPanel 
+          element={selectedElement} 
+          updateElement={updateElement} 
+        />
+      );
+    case ElementType.GONDOLA:
+      return (
+        <GondolaPropertiesPanel 
+          element={selectedElement} 
+          updateElement={updateElement} 
+        />
+      );
+    case ElementType.END_CAP:
+      return (
+        <EndCapPropertiesPanel 
+          element={selectedElement} 
+          updateElement={updateElement} 
+        />
+      );
+    case ElementType.BARGAIN_BIN:
+      return (
+        <BargainBinPropertiesPanel 
           element={selectedElement} 
           updateElement={updateElement} 
         />

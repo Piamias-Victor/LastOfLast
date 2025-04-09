@@ -11,6 +11,8 @@ export enum ElementType {
   CABINET = 'cabinet',
   WALL = 'wall',
   DOOR = 'door',
+  END_CAP = 'end_cap', // Tête de gondole
+  BARGAIN_BIN = 'bargain_bin', // Bac soldeur
 }
 
 /**
@@ -74,12 +76,74 @@ export interface DoorElement extends BasePlanElement {
 }
 
 /**
+ * Interface pour un comptoir
+ */
+export interface CounterElement extends BasePlanElement {
+  type: ElementType.COUNTER;
+  stations: number; // Nombre de postes de travail
+  hasStorage: boolean; // Possède un espace de stockage
+  counterHeight: number; // Hauteur du comptoir en cm
+  isAccessible: boolean; // Accessible PMR
+  backgroundColor: string;
+  borderColor?: string;
+  borderWidth?: number;
+}
+
+/**
+ * Interface pour une gondole/rayon
+ */
+export interface GondolaElement extends BasePlanElement {
+  type: ElementType.GONDOLA;
+  shelfCount: number; // Nombre d'étagères
+  shelfHeight: number; // Hauteur d'une étagère en cm
+  shelfDepth: number; // Profondeur d'une étagère en cm
+  doubleSided: boolean; // Rayon accessible des deux côtés
+  backgroundColor: string;
+  borderColor?: string;
+  borderWidth?: number;
+  rackColor?: string; // Couleur des étagères
+}
+
+/**
+ * Interface pour une tête de gondole
+ */
+export interface EndCapElement extends BasePlanElement {
+  type: ElementType.END_CAP;
+  shelfCount: number; // Nombre d'étagères
+  shelfHeight: number; // Hauteur d'une étagère en cm
+  shelfDepth: number; // Profondeur d'une étagère en cm
+  isPremium: boolean; // Emplacement premium (mise en valeur)
+  backgroundColor: string;
+  borderColor?: string;
+  borderWidth?: number;
+  highlightColor?: string; // Couleur de mise en valeur
+}
+
+/**
+ * Interface pour un bac soldeur
+ */
+export interface BargainBinElement extends BasePlanElement {
+  type: ElementType.BARGAIN_BIN;
+  depth: number; // Profondeur du bac en cm
+  isRound: boolean; // Forme ronde ou rectangulaire
+  hasSignage: boolean; // Affichage promotionnel
+  backgroundColor: string;
+  borderColor?: string;
+  borderWidth?: number;
+  discountLabel?: string; // Texte de promotion (ex: "-50%")
+}
+
+/**
  * Type d'union pour tous les éléments possibles
  */
 export type AnyPlanElement = 
   | RectangleElement
   | WallElement
-  | DoorElement;
+  | DoorElement
+  | CounterElement
+  | GondolaElement
+  | EndCapElement
+  | BargainBinElement;
 
 /**
  * Interface pour un élément générique

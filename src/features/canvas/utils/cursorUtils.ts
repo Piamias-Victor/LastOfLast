@@ -24,12 +24,24 @@ export function useCursor(
     currentPosition: Vector2D
   ) => {
     // Si une opération est en cours, le curseur est déjà géré
-    if (currentOperation !== ElementOperation.None) return;
+    if (currentOperation !== ElementOperation.None) {
+      if (currentOperation === ElementOperation.Rotate) {
+        setCursor('grabbing'); // Curseur de rotation active
+      }
+      return;
+    }
     
     // Vérifier si on survole un élément sélectionné
     if (selectedElementIds.length === 1) {
       const selectedElement = elements.find(el => el.id === selectedElementIds[0]);
       if (selectedElement) {
+        // Vérifier si on survole la poignée de rotation
+        if (elementDetection.isRotationHandleSelected(currentPosition, selectedElement)) {
+          setCursor('grab'); // Curseur de rotation
+          setHoveredResizeHandle(null);
+          return;
+        }
+        
         // Vérifier si on survole une poignée de redimensionnement
         const resizeHandle = elementDetection.getResizeHandleAtPosition(currentPosition, selectedElement);
         

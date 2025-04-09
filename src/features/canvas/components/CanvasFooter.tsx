@@ -7,12 +7,15 @@ import React from 'react';
  */
 const CanvasFooter: React.FC = () => {
   return (
-    <div className="text-xs p-2 bg-gray-100 border-t text-gray-500 flex justify-between">
-      <div>
-        <span className="font-medium">Raccourcis :</span> Échap = Désélectionner, Shift+Clic = Sélection multiple
+    <div className="text-xs p-2 bg-gray-100 border-t text-gray-500 flex flex-wrap justify-between">
+      <div className="mr-4">
+        <span className="font-medium">Sélection :</span> Échap = Désélectionner, Shift+Clic = Sélection multiple
+      </div>
+      <div className="mr-4">
+        <span className="font-medium">Rotation :</span> Maintenir R + Flèches ou Cmd/Ctrl + Flèches (avec Shift pour 15°)
       </div>
       <div>
-        <span className="font-medium">Sélection :</span> Cliquez et glissez dans un espace vide pour sélectionner plusieurs éléments
+        <span className="font-medium">Redimensionnement :</span> Disponible uniquement quand la rotation est à 0°
       </div>
     </div>
   );

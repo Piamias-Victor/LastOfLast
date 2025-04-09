@@ -24,6 +24,8 @@ export interface SelectionIndicatorOptions {
   lineWidth?: number;
   /** Motif de ligne pointillée */
   lineDash?: number[];
+  /** Appliquer la rotation de l'élément à la sélection */
+  applyRotation?: boolean;
 }
 
 /**

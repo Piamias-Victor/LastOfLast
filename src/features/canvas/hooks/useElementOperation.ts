@@ -9,9 +9,10 @@ import {
 } from '../utils/resizeUtils';
 import { ElementOperationResult } from '../types';
 import { useEditorStore } from '@/store';
+import { snapAngleToInterval, rotatePoint, rotateVector } from '@/lib/utils/rotationUtils';
 
 /**
- * Hook pour gérer les opérations sur les éléments (déplacement, redimensionnement)
+ * Hook pour gérer les opérations sur les éléments (déplacement, redimensionnement, rotation)
  */
 export function useElementOperation(): ElementOperationResult {
   const { elements, updateElement, snapToGrid, gridSize } = useEditorStore();
@@ -98,7 +99,7 @@ export function useElementOperation(): ElementOperationResult {
   }, [elements, updateElement, snapToGrid, gridSize]);
 
   /**
-   * Redimensionne un élément
+   * Redimensionne un élément en tenant compte de sa rotation
    */
   const resizeElement = useCallback((
     element: AnyPlanElement,
@@ -106,17 +107,34 @@ export function useElementOperation(): ElementOperationResult {
     currentPoint: Vector2D,
     handle: ResizeHandle
   ) => {
-    const { bounds } = element;
+    const { bounds, transform } = element;
+    const rotation = transform.rotation;
+    const center = {
+      x: bounds.x + bounds.width / 2,
+      y: bounds.y + bounds.height / 2
+    };
+    
+    // Si l'élément est pivoté, nous devons ajuster les points pour le calcul
+    let adjustedStartPoint = startPoint;
+    let adjustedCurrentPoint = currentPoint;
+    
+    if (rotation !== 0) {
+      // Inverser la rotation des points pour les calculs
+      adjustedStartPoint = rotatePoint(startPoint, center, -rotation);
+      adjustedCurrentPoint = rotatePoint(currentPoint, center, -rotation);
+    }
+    
+    // Calculer le delta dans l'espace non pivoté
+    const dx = adjustedCurrentPoint.x - adjustedStartPoint.x;
+    const dy = adjustedCurrentPoint.y - adjustedStartPoint.y;
+    
+    // Obtenir les valeurs originales
     const originalX = bounds.x;
     const originalY = bounds.y;
     const originalWidth = bounds.width;
     const originalHeight = bounds.height;
     
-    // Calculer les différences
-    const dx = currentPoint.x - startPoint.x;
-    const dy = currentPoint.y - startPoint.y;
-    
-    // Calculer les nouvelles valeurs
+    // Calculer les nouvelles valeurs dans l'espace non pivoté
     let { newX, newY, newWidth, newHeight } = calculateResizeValues(
       handle,
       originalX,
@@ -151,6 +169,31 @@ export function useElementOperation(): ElementOperationResult {
       ));
     }
     
+    // Recalculer le centre après redimensionnement
+    const newCenter = {
+      x: newX + newWidth / 2,
+      y: newY + newHeight / 2
+    };
+    
+    // Ajuster la position pour maintenir la position du centre
+    // Ce calcul est important pour que le redimensionnement soit cohérent avec la rotation
+    if (rotation !== 0) {
+      // Calculer l'offset dû au changement de centre
+      const offsetX = newCenter.x - center.x;
+      const offsetY = newCenter.y - center.y;
+      
+      // Appliquer la rotation à l'offset
+      const rotatedOffset = rotateVector({ x: offsetX, y: offsetY }, rotation);
+      
+      // Ajuster la position pour maintenir l'alignement
+      newX = originalX + rotatedOffset.x;
+      newY = originalY + rotatedOffset.y;
+      
+      // Recalculer le centre final
+      newCenter.x = newX + newWidth / 2;
+      newCenter.y = newY + newHeight / 2;
+    }
+    
     // Mettre à jour l'élément
     updateElement(element.id, {
       bounds: {
@@ -160,15 +203,53 @@ export function useElementOperation(): ElementOperationResult {
         height: newHeight,
       },
       transform: {
-        ...element.transform,
+        ...transform,
         position: { x: newX, y: newY },
       },
     });
   }, [updateElement, snapToGrid, gridSize]);
 
+  /**
+   * Fait pivoter un élément
+   */
+  const rotateElementOperation = useCallback((
+    element: AnyPlanElement,
+    center: Vector2D,
+    startPoint: Vector2D,
+    currentPoint: Vector2D,
+    shiftKey: boolean
+  ) => {
+    // Calculer les angles
+    const startAngle = Math.atan2(startPoint.y - center.y, startPoint.x - center.x);
+    const currentAngle = Math.atan2(currentPoint.y - center.y, currentPoint.x - center.x);
+    
+    // Calculer la différence d'angle en degrés
+    const deltaAngle = (currentAngle - startAngle) * (180 / Math.PI);
+    
+    // Ajouter la rotation actuelle de l'élément
+    let newRotation = element.transform.rotation + deltaAngle;
+    
+    // Appliquer le snap si la touche Shift est enfoncée
+    if (shiftKey) {
+      newRotation = snapAngleToInterval(newRotation, 15, true);
+    }
+    
+    // Normaliser la rotation entre 0 et 360 degrés
+    newRotation = ((newRotation % 360) + 360) % 360;
+    
+    // Mettre à jour l'élément
+    updateElement(element.id, {
+      transform: {
+        ...element.transform,
+        rotation: newRotation,
+      },
+    });
+  }, [updateElement]);
+
   return {
     moveElement,
     moveMultipleElements,
-    resizeElement
+    resizeElement,
+    rotateElement: rotateElementOperation
   };
 }

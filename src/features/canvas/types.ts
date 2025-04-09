@@ -16,6 +16,7 @@ export interface ElementDetectionResult {
   findElementAtPosition: (position: Vector2D) => AnyPlanElement | null;
   findElementsInArea: (start: Vector2D, end: Vector2D) => AnyPlanElement[];
   getResizeHandleAtPosition: (position: Vector2D, element: AnyPlanElement) => ResizeHandle | null;
+  isRotationHandleSelected: (position: Vector2D, element: AnyPlanElement) => boolean;
 }
 
 /**
@@ -25,6 +26,7 @@ export interface ElementOperationResult {
   moveElement: (elementId: string, startPoint: Vector2D, currentPoint: Vector2D) => void;
   moveMultipleElements: (elementIds: string[], startPoint: Vector2D, currentPoint: Vector2D) => void;
   resizeElement: (element: AnyPlanElement, startPoint: Vector2D, currentPoint: Vector2D, handle: ResizeHandle) => void;
+  rotateElement: (element: AnyPlanElement, center: Vector2D, startPoint: Vector2D, currentPoint: Vector2D, shiftKey: boolean) => void;
 }
 
 /**

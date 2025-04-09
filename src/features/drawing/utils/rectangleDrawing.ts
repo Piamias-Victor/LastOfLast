@@ -3,7 +3,7 @@
 import { RectangleElement } from '@/types/elements';
 import { RectangleDrawOptions } from '../types';
 import { createDrawingContext } from './drawingContext';
-import { drawSelectionIndicator } from './selectionDrawing';
+import { drawSelectionForElement } from './selectionDrawing';
 
 /**
  * Dessine un rectangle sur le canvas
@@ -60,13 +60,14 @@ export function drawRectangle(
     }
   }
   
+  // Restaurer l'état du contexte avant de dessiner la sélection
+  drawContext.restore();
+  
   // Si l'élément est sélectionné, dessiner la sélection
   if (isSelected) {
-    drawSelectionIndicator(context, bounds);
+    // Utiliser la nouvelle fonction qui tient compte de la rotation
+    drawSelectionForElement(context, rectangle);
   }
-  
-  // Restaurer l'état du contexte
-  drawContext.restore();
 }
 
 /**

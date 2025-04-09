@@ -16,6 +16,11 @@ export const selectOperationStartPoint = (state: RootState) => state.operationSt
 export const selectActiveResizeHandle = (state: RootState) => state.activeResizeHandle;
 
 /**
+ * Sélectionne le centre de rotation
+ */
+export const selectRotationCenter = (state: RootState) => state.rotationCenter;
+
+/**
  * Vérifie si une opération est en cours
  */
 export const selectIsOperationActive = (state: RootState) => state.currentOperation !== 'none';

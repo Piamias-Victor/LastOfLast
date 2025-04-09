@@ -20,14 +20,26 @@ export function determineOperation(
   if (selectedElementIds.length === 1) {
     const selectedElement = elements.find(el => el.id === selectedElementIds[0]);
     if (selectedElement) {
-      const resizeHandle = elementDetection.getResizeHandleAtPosition(position, selectedElement);
-      if (resizeHandle) {
-        // Commencer une opération de redimensionnement
+      // Vérifier si on clique sur la poignée de rotation
+      if (elementDetection.isRotationHandleSelected(position, selectedElement)) {
         return {
-          operation: ElementOperation.Resize,
+          operation: ElementOperation.Rotate,
           elementId: selectedElement.id,
-          handle: resizeHandle
+          handle: null
         };
+      }
+      
+      // Vérifier si l'élément est pivoté
+      if (selectedElement.transform.rotation === 0) {
+        // Vérifier si on clique sur une poignée de redimensionnement (seulement si l'élément n'est pas pivoté)
+        const resizeHandle = elementDetection.getResizeHandleAtPosition(position, selectedElement);
+        if (resizeHandle) {
+          return {
+            operation: ElementOperation.Resize,
+            elementId: selectedElement.id,
+            handle: resizeHandle
+          };
+        }
       }
     }
   }

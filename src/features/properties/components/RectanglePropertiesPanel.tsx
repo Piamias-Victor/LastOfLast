@@ -53,12 +53,29 @@ const RectanglePropertiesPanel: React.FC<RectanglePropertiesPanelProps> = ({
     });
   };
 
+  const handleRotationSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value, 10);
+    updateElement(id, {
+      transform: { ...transform, rotation: value }
+    });
+  };
+
+  const handleResetRotation = () => {
+    updateElement(id, {
+      transform: { ...transform, rotation: 0 }
+    });
+  };
+
   const handleCornerRadiusUpdate = (value: number | string) => {
     const numValue = typeof value === 'string' ? parseFloat(value) : value;
     updateElement(id, {
       cornerRadius: Math.max(0, numValue)
     });
   };
+
+  // Normalize rotation to 0-360 degrees for display
+  const normalizedRotation = ((transform.rotation % 360) + 360) % 360;
+  const isRotated = normalizedRotation !== 0;
 
   return (
     <div className="p-4">
@@ -110,14 +127,42 @@ const RectanglePropertiesPanel: React.FC<RectanglePropertiesPanelProps> = ({
               className="w-1/2"
             />
           </div>
+          {isRotated && (
+            <div className="mt-1 text-xs text-amber-600">
+              Remettez la rotation à 0° pour redimensionner avec les poignées
+            </div>
+          )}
         </PropertyGroup>
         
-        <EditableField 
-          label="Rotation" 
-          value={Math.round(transform.rotation)} 
-          onUpdate={handleRotationUpdate} 
-          suffix="°"
-        />
+        <PropertyGroup title="Rotation">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <EditableField 
+                label="" 
+                value={Math.round(normalizedRotation)} 
+                onUpdate={handleRotationUpdate} 
+                suffix="°"
+                className="flex-1"
+              />
+              <button 
+                className="px-3 py-1 text-xs bg-pharmacy-primary text-white rounded hover:bg-pharmacy-accent transition-colors"
+                onClick={handleResetRotation}
+              >
+                Réinitialiser
+              </button>
+            </div>
+            <div className="flex items-center gap-2">
+              <input 
+                type="range" 
+                min="0" 
+                max="359" 
+                value={Math.round(normalizedRotation)} 
+                onChange={handleRotationSliderChange}
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+              />
+            </div>
+          </div>
+        </PropertyGroup>
         
         <EditableField 
           label="Rayon des coins" 

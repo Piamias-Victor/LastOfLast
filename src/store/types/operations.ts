@@ -23,6 +23,9 @@ export interface OperationsStateProps {
   
   /** Poignée de redimensionnement actuellement utilisée */
   activeResizeHandle: ResizeHandle | null;
+  
+  /** Point de référence pour la rotation (généralement le centre de l'élément) */
+  rotationCenter: Vector2D | null;
 }
 
 /**
@@ -33,7 +36,8 @@ export interface OperationsStateActions {
   startOperation: (
     operation: ElementOperation,
     startPoint: Vector2D,
-    resizeHandle?: ResizeHandle | null
+    resizeHandle?: ResizeHandle | null,
+    rotationCenter?: Vector2D | null
   ) => void;
   
   /** Termine l'opération en cours */

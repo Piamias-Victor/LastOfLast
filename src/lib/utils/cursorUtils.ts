@@ -31,7 +31,7 @@ export function getCursor(
       }
       break;
     case ElementOperation.Rotate:
-      return 'alias';
+      return 'grab'; // Curseur de rotation
     default:
       return 'default';
   }

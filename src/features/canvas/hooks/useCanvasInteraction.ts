@@ -24,6 +24,7 @@ export function useCanvasInteraction(
     currentOperation,
     operationStartPoint,
     activeResizeHandle,
+    rotationCenter,
     zoom,
     viewportOffset,
   } = useEditorStore();
@@ -31,10 +32,13 @@ export function useCanvasInteraction(
   // Référence à l'élément en cours de manipulation
   const activeElementRef = useRef<string | null>(null);
   
+  // État pour suivre si la touche Shift est enfoncée
+  const shiftKeyRef = useRef<boolean>(false);
+  
   // Hooks spécialisés
   const { screenToCanvas } = useCoordinateConversion(canvasRef);
   const elementDetection = useElementDetection(elements);
-  const { moveElement, moveMultipleElements, resizeElement } = useElementOperation();
+  const { moveElement, moveMultipleElements, resizeElement, rotateElement } = useElementOperation();
   const { selectionBox, setSelectionBox, drawSelectionBox } = useSelectionBox(canvasRef, zoom, viewportOffset);
   const { cursor, updateCursor } = useCursor(elementDetection, selectedElementIds, elements, currentOperation);
 
@@ -43,6 +47,9 @@ export function useCanvasInteraction(
    */
   const handleMouseDown = useCallback(
     (e: React.MouseEvent<HTMLCanvasElement>) => {
+      // Mémoriser l'état de la touche Shift
+      shiftKeyRef.current = e.shiftKey;
+      
       // Coordonnées du clic dans le canvas
       const position = screenToCanvas(e.clientX, e.clientY);
 
@@ -53,6 +60,23 @@ export function useCanvasInteraction(
         selectedElementIds,
         elements
       );
+
+      if (operation === ElementOperation.Rotate && elementId) {
+        // Trouver l'élément à faire pivoter
+        const element = elements.find(el => el.id === elementId);
+        if (!element) return;
+        
+        // Calculer le centre de l'élément pour la rotation
+        const center = {
+          x: element.bounds.x + element.bounds.width / 2,
+          y: element.bounds.y + element.bounds.height / 2
+        };
+        
+        // Commencer une opération de rotation
+        activeElementRef.current = elementId;
+        startOperation(ElementOperation.Rotate, position, null, center);
+        return;
+      }
 
       if (operation === ElementOperation.Resize && elementId) {
         // Commencer une opération de redimensionnement
@@ -82,7 +106,7 @@ export function useCanvasInteraction(
         // Commencer l'opération de déplacement
         activeElementRef.current = elementId;
         startOperation(ElementOperation.Move, position);
-      } else {
+      } else if (operation === ElementOperation.None) {
         // Clic dans le vide, commencer un rectangle de sélection
         // sauf si on maintient la touche Shift
         if (!e.shiftKey) {
@@ -116,6 +140,9 @@ export function useCanvasInteraction(
       // Coordonnées actuelles dans le canvas
       const currentPosition = screenToCanvas(e.clientX, e.clientY);
       
+      // Mettre à jour l'état de la touche Shift
+      shiftKeyRef.current = e.shiftKey;
+      
       // Mettre à jour le curseur
       updateCursor(currentPosition);
       
@@ -134,15 +161,35 @@ export function useCanvasInteraction(
       // Si aucune opération n'est en cours, sortir
       if (currentOperation === ElementOperation.None || !operationStartPoint) return;
 
-      if (currentOperation === ElementOperation.Resize && activeResizeHandle && activeElementRef.current) {
+      if (currentOperation === ElementOperation.Rotate && rotationCenter && activeElementRef.current) {
+        // Rotation d'un élément
+        const elementId = activeElementRef.current;
+        const element = elements.find((el) => el.id === elementId);
+        
+        if (element) {
+          rotateElement(
+            element, 
+            rotationCenter, 
+            operationStartPoint, 
+            currentPosition, 
+            shiftKeyRef.current
+          );
+          
+          // Mettre à jour le point de départ pour le prochain mouvement
+          // Important pour assurer une rotation fluide
+          startOperation(ElementOperation.Rotate, currentPosition, null, rotationCenter);
+        }
+      } else if (currentOperation === ElementOperation.Resize && activeResizeHandle && activeElementRef.current) {
         // Redimensionnement
         const elementId = activeElementRef.current;
         const element = elements.find((el) => el.id === elementId);
         
         if (element) {
-            resizeElement(element, operationStartPoint, currentPosition, activeResizeHandle);
+          // Appliquer le redimensionnement avec les nouveaux calculs qui tiennent compte de la rotation
+          resizeElement(element, operationStartPoint, currentPosition, activeResizeHandle);
           
           // Mettre à jour le point de départ pour le prochain mouvement
+          // Important pour maintenir la référence correcte après rotation
           startOperation(ElementOperation.Resize, currentPosition, activeResizeHandle);
         }
       } else if (currentOperation === ElementOperation.Move) {
@@ -167,12 +214,14 @@ export function useCanvasInteraction(
       drawSelectionBox,
       currentOperation,
       operationStartPoint,
+      rotationCenter,
       activeResizeHandle,
       elements,
       selectedElementIds,
       moveMultipleElements,
       moveElement,
       resizeElement,
+      rotateElement,
       startOperation
     ]
   );
@@ -204,6 +253,7 @@ export function useCanvasInteraction(
     if (currentOperation !== ElementOperation.None) {
       endOperation();
       activeElementRef.current = null;
+      shiftKeyRef.current = false;
     }
   }, [
     selectionBox, 

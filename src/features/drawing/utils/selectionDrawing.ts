@@ -3,6 +3,13 @@
 import { Bounds, Vector2D } from '@/types/geometry';
 import { EDITOR_COLORS } from '@/lib/constants/editor';
 import { SelectionIndicatorOptions } from '../types';
+import { 
+  calculateRotationHandlePosition, 
+  ROTATION_HANDLE_SIZE,
+  rotatePoint
+} from '@/lib/utils/rotationUtils';
+import { AnyPlanElement } from '@/types/elements';
+import { createDrawingContext } from './drawingContext';
 
 /**
  * Dessine un indicateur de sélection autour d'une zone
@@ -12,6 +19,27 @@ export function drawSelectionIndicator(
   bounds: Bounds,
   options: SelectionIndicatorOptions = {}
 ): void {
+  drawSelectionForElement(context, {
+    id: '',
+    type: 'rectangle', 
+    bounds, 
+    transform: { position: { x: bounds.x, y: bounds.y }, rotation: 0, scale: { x: 1, y: 1 } },
+    zIndex: 0,
+    isLocked: false,
+    isVisible: true,
+    isSelected: true,
+    metadata: { name: '', customProperties: {} }
+  }, options);
+}
+
+/**
+ * Dessine un indicateur de sélection pour un élément spécifique, en tenant compte de sa rotation
+ */
+export function drawSelectionForElement(
+  context: CanvasRenderingContext2D,
+  element: AnyPlanElement,
+  options: SelectionIndicatorOptions = {}
+): void {
   const { 
     padding = 5, 
     handleSize = 12, 
@@ -19,7 +47,23 @@ export function drawSelectionIndicator(
     lineDash = [5, 3]
   } = options;
   
+  const { bounds, transform } = element;
   const { x, y, width, height } = bounds;
+  const rotation = transform.rotation;
+  
+  // Calculer le centre de l'élément
+  const center = { x: x + width / 2, y: y + height / 2 };
+  
+  // Créer un contexte de dessin pour appliquer les transformations
+  const drawContext = createDrawingContext(context);
+  
+  // Sauvegarder l'état du contexte
+  drawContext.save();
+  
+  // Appliquer la rotation si l'élément est pivoté
+  if (rotation !== 0) {
+    drawContext.transform(element);
+  }
   
   // Dessiner le cadre de sélection
   context.strokeStyle = EDITOR_COLORS.selection;
@@ -32,8 +76,25 @@ export function drawSelectionIndicator(
     height + padding * 2
   );
   
-  // Dessiner les poignées de redimensionnement
-  drawResizeHandles(context, bounds, handleSize);
+  // Dessiner les poignées de redimensionnement seulement si l'élément n'est pas pivoté
+  if (rotation === 0) {
+    drawResizeHandles(context, bounds, handleSize);
+  } else {
+    // Si l'élément est pivoté, afficher un message de rotation
+    context.fillStyle = 'rgba(0, 0, 0, 0.7)';
+    context.fillRect(x + width / 2 - 100, y + height / 2 - 15, 200, 30);
+    context.font = '12px sans-serif';
+    context.fillStyle = '#ffffff';
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillText('(Remettez à 0° pour redimensionner)', x + width / 2, y + height / 2);
+  }
+  
+  // Restaurer l'état du contexte avant de dessiner la poignée de rotation
+  drawContext.restore();
+  
+  // Dessiner la poignée de rotation en tenant compte de la rotation
+  drawRotationHandle(context, element);
 }
 
 /**
@@ -72,6 +133,70 @@ export function drawResizeHandles(
     context.fill();
     context.stroke();
   }
+}
+
+/**
+ * Dessine la poignée de rotation en tenant compte de la rotation de l'élément
+ */
+export function drawRotationHandle(
+  context: CanvasRenderingContext2D,
+  element: AnyPlanElement
+): void {
+  const { bounds, transform } = element;
+  const center = { 
+    x: bounds.x + bounds.width / 2, 
+    y: bounds.y + bounds.height / 2 
+  };
+  
+  // Position de la poignée de rotation de base (sans rotation)
+  const baseHandlePos = calculateRotationHandlePosition(bounds);
+  
+  // Appliquer la rotation à la position de la poignée
+  const handlePos = transform.rotation !== 0 
+    ? rotatePoint(baseHandlePos, center, transform.rotation)
+    : baseHandlePos;
+  
+  const halfSize = ROTATION_HANDLE_SIZE / 2;
+  
+  // Point supérieur centré de l'élément (avec la rotation appliquée)
+  const topCenter = transform.rotation !== 0
+    ? rotatePoint({ x: center.x, y: bounds.y }, center, transform.rotation)
+    : { x: center.x, y: bounds.y };
+  
+  // Ligne entre le haut de l'élément et la poignée
+  context.beginPath();
+  context.setLineDash([3, 2]);
+  context.moveTo(topCenter.x, topCenter.y);
+  context.lineTo(handlePos.x, handlePos.y);
+  context.strokeStyle = EDITOR_COLORS.selection;
+  context.stroke();
+  
+  // Dessiner la poignée de rotation (cercle)
+  context.beginPath();
+  context.setLineDash([]);
+  context.arc(handlePos.x, handlePos.y, halfSize, 0, Math.PI * 2);
+  context.fillStyle = EDITOR_COLORS.resizeHandleFill;
+  context.strokeStyle = EDITOR_COLORS.resizeHandle;
+  context.lineWidth = 2;
+  context.fill();
+  context.stroke();
+  
+  // Dessiner l'icône de rotation à l'intérieur du cercle
+  context.beginPath();
+  context.arc(handlePos.x, handlePos.y, halfSize / 2, 0, Math.PI * 1.5);
+  context.strokeStyle = EDITOR_COLORS.resizeHandle;
+  context.lineWidth = 1;
+  context.stroke();
+  
+  // Petite flèche pour indiquer la rotation
+  const arrowSize = 3;
+  context.beginPath();
+  context.moveTo(handlePos.x + halfSize / 2, handlePos.y);
+  context.lineTo(handlePos.x + halfSize / 2 - arrowSize, handlePos.y - arrowSize);
+  context.lineTo(handlePos.x + halfSize / 2 - arrowSize, handlePos.y + arrowSize);
+  context.closePath();
+  context.fillStyle = EDITOR_COLORS.resizeHandle;
+  context.fill();
 }
 
 /**

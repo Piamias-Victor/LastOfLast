@@ -1,11 +1,13 @@
+// src/features/drawing/utils/drawElements.ts (modification)
 'use client';
 
-import { AnyPlanElement, ElementType, RectangleElement, CounterElement, GondolaElement, EndCapElement, BargainBinElement } from '@/types/elements';
+import { AnyPlanElement, ElementType, RectangleElement, CounterElement, GondolaElement, EndCapElement, BargainBinElement, WallElement } from '@/types/elements';
 import { drawRectangle } from './rectangleDrawing';
 import { drawCounter } from './counterDrawing';
 import { drawGondola } from './gondolaDrawing';
 import { drawEndCap } from './endcapDrawing';
 import { drawBargainBin } from './bargainBinDrawing';
+import { drawWall } from './wallDrawing';
 import { DrawElementsOptions } from '../types';
 
 /**
@@ -46,6 +48,9 @@ export function drawElements(
         break;
       case ElementType.BARGAIN_BIN:
         drawBargainBin(context, element as BargainBinElement, isSelected);
+        break;
+      case ElementType.WALL:
+        drawWall(context, element as WallElement, isSelected);
         break;
       // D'autres types d'éléments seront ajoutés ici plus tard
       default:

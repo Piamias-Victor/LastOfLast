@@ -1,3 +1,4 @@
+// src/types/elements.ts (modification)
 import { Bounds, Transform, Vector2D } from './geometry';
 
 /**
@@ -59,9 +60,10 @@ export interface RectangleElement extends BasePlanElement {
  */
 export interface WallElement extends BasePlanElement {
   type: ElementType.WALL;
+  startPoint: Vector2D;
+  endPoint: Vector2D;
   thickness: number;
-  start: Vector2D;
-  end: Vector2D;
+  color: string;
   isStructural: boolean;
 }
 

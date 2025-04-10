@@ -1,3 +1,5 @@
+// src/features/drawing/index.ts (modification)
+
 // Fonctions de dessin de rectangles
 export { drawRectangle, drawRoundedRectangle } from './utils/rectangleDrawing';
 
@@ -12,6 +14,9 @@ export { drawEndCap } from './utils/endcapDrawing';
 
 // Fonctions de dessin de bacs soldeurs
 export { drawBargainBin } from './utils/bargainBinDrawing';
+
+// Fonctions de dessin de murs
+export { drawWall, calculateWallBounds } from './utils/wallDrawing';
 
 // Fonctions de dessin de sélection
 export { 

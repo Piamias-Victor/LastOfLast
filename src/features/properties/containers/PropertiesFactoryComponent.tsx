@@ -1,3 +1,4 @@
+// src/features/properties/containers/PropertiesFactoryComponent.tsx (modification)
 import React from 'react';
 import { ElementType, AnyPlanElement } from '@/types/elements';
 import NoSelectionPanel from '../components/NoSelectionPanel';
@@ -7,6 +8,7 @@ import CounterPropertiesPanel from '../components/CounterPropertiesPanel';
 import GondolaPropertiesPanel from '../components/GondolaPropertiesPanel';
 import EndCapPropertiesPanel from '../components/EndCapPropertiesPanel';
 import BargainBinPropertiesPanel from '../components/BargainBinPropertiesPanel';
+import WallPropertiesPanel from '../components/WallPropertiesPanel';
 import { PanelType } from '../hooks/usePropertiesSelector';
 
 interface PropertiesFactoryProps {
@@ -84,6 +86,14 @@ const PropertiesFactoryComponent: React.FC<PropertiesFactoryProps> = ({
     case ElementType.BARGAIN_BIN:
       return (
         <BargainBinPropertiesPanel 
+          element={selectedElement} 
+          updateElement={updateElement} 
+        />
+      );
+      
+    case ElementType.WALL:
+      return (
+        <WallPropertiesPanel 
           element={selectedElement} 
           updateElement={updateElement} 
         />

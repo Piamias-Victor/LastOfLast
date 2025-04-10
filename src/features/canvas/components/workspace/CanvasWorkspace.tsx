@@ -1,3 +1,4 @@
+// src/features/canvas/components/workspace/CanvasWorkspace.tsx (modification)
 import React, { useRef } from 'react';
 import { useCanvasInteraction } from '@/features/canvas/hooks/useCanvasInteraction';
 import { useCanvasZoom } from '@/features/canvas/hooks/useCanvasZoom';
@@ -6,6 +7,8 @@ import { useCanvasDrop } from '@/features/canvas/hooks/useCanvasDrop';
 import { useAlignment } from '@/features/alignment';
 import { AlignmentGuides } from '@/features/alignment';
 import { useEditorStore } from '@/store';
+import { useActiveDrawing } from '@/features/canvas/hooks/useActiveDrawing'; // Nouvelle importation
+import { usePreviewCleanup } from '../../hooks/setup/usePreviewCleanup';
 
 interface CanvasWorkspaceProps {
   width: number;
@@ -18,6 +21,8 @@ interface CanvasWorkspaceProps {
 const CanvasWorkspace: React.FC<CanvasWorkspaceProps> = ({ width, height }) => {
   // Correction du typage de useRef
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  usePreviewCleanup(canvasRef);
   
   // State du canvas depuis le store
   const {
@@ -28,11 +33,15 @@ const CanvasWorkspace: React.FC<CanvasWorkspaceProps> = ({ width, height }) => {
     elements,
     selectedElementIds,
     setZoom,
-    setViewportOffset
+    setViewportOffset,
+    drawingMode // Ajouté pour référence
   } = useEditorStore();
   
   // Hook pour les guides d'alignement
   const { activeGuides } = useAlignment();
+  
+  // Hook pour le dessin actif
+  const { updateDrawing } = useActiveDrawing(canvasRef); // Utiliser le hook de dessin actif
   
   // Hooks d'interaction avec le canvas
   const { handleMouseDown, handleMouseMove, handleMouseUp, selectionBox, cursor } = 
@@ -76,7 +85,10 @@ const CanvasWorkspace: React.FC<CanvasWorkspaceProps> = ({ width, height }) => {
         onDragOver={handleDragOver}
         onDrop={handleDrop}
         className="bg-gray-100"
-        style={{ display: 'block', cursor }}
+        style={{ 
+          display: 'block', 
+          cursor: drawingMode === 'wall' ? 'crosshair' : cursor // Changer le curseur en mode dessin
+        }}
       />
       
       {/* Guides d'alignement */}

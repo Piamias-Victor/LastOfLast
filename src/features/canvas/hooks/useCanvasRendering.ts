@@ -1,12 +1,14 @@
+// src/features/canvas/hooks/useCanvasRendering.ts (optimisation)
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { DEFAULT_EDITOR_CONFIG, EDITOR_COLORS } from '@/lib/constants/editor';
 import { AnyPlanElement } from '@/types/elements';
 import { drawMultiSelectionBox } from '@/features/drawing';
 import { Vector2D } from '@/types/geometry';
 import { SelectionBox } from '../types';
 import { drawElements } from '@/features/drawing/utils/drawElements';
+import { useEditorStore } from '@/store';
 
 interface UseCanvasRenderingProps {
   canvasRef: React.RefObject<HTMLCanvasElement>;
@@ -36,8 +38,11 @@ export function useCanvasRendering({
   selectedElementIds,
   selectionBox
 }: UseCanvasRenderingProps): void {
-  // Dessiner le canvas et la grille
-  useEffect(() => {
+  // Accéder au mode de dessin
+  const { drawingMode, drawingStartPoint } = useEditorStore();
+
+  // Fonction de rendu optimisée
+  const renderCanvas = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -111,6 +116,25 @@ export function useCanvasRendering({
     viewportOffset,
     elements,
     selectedElementIds,
-    selectionBox
+    selectionBox,
+    canvasRef
+  ]);
+
+  // Dessiner le canvas et la grille
+  useEffect(() => {
+    renderCanvas();
+    
+    // Configurer un événement pour le rendu forcé
+    const handleForceRender = () => {
+      renderCanvas();
+    };
+    
+    window.addEventListener('forcerender', handleForceRender);
+    
+    return () => {
+      window.removeEventListener('forcerender', handleForceRender);
+    };
+  }, [
+    renderCanvas
   ]);
 }

@@ -1,3 +1,4 @@
+// src/features/canvas/hooks/useMouseEvents.ts (modification)
 import { useCallback, RefObject } from 'react';
 import { Vector2D } from '@/types/geometry';
 import { useCoordinateConversion } from './useCoordinateConversion';
@@ -7,14 +8,14 @@ interface UseMouseEventsProps {
   canvasRef: RefObject<HTMLCanvasElement>;
   onMouseDown: (position: Vector2D, isShiftKey: boolean) => void;
   onMouseMove: (position: Vector2D, isShiftKey: boolean) => void;
-  onMouseUp: () => void;
+  onMouseUp: (position: Vector2D) => void; // Modifié pour inclure la position
   currentOperation: ElementOperation;
 }
 
 interface UseMouseEventsResult {
   handleMouseDown: (e: React.MouseEvent<HTMLCanvasElement>) => void;
   handleMouseMove: (e: React.MouseEvent<HTMLCanvasElement>) => void;
-  handleMouseUp: () => void;
+  handleMouseUp: (e: React.MouseEvent<HTMLCanvasElement>) => void; // Modifié pour inclure l'événement
 }
 
 /**
@@ -51,10 +52,16 @@ export function useMouseEvents({
     [screenToCanvas, onMouseMove]
   );
 
-  const handleMouseUp = useCallback(() => {
-    // Déclencher le callback de fin d'interaction
-    onMouseUp();
-  }, [onMouseUp]);
+  const handleMouseUp = useCallback(
+    (e: React.MouseEvent<HTMLCanvasElement>) => {
+      // Coordonnées du relâchement dans le canvas
+      const position = screenToCanvas(e.clientX, e.clientY);
+      
+      // Déclencher le callback de fin d'interaction avec la position
+      onMouseUp(position);
+    },
+    [screenToCanvas, onMouseUp]
+  );
 
   return {
     handleMouseDown,

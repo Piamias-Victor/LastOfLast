@@ -1,3 +1,4 @@
+// src/features/canvas/components/CanvasContainer.tsx (suite)
 import React from 'react';
 import { useEditorStore } from '@/store';
 import CanvasTools from './CanvasTools';
@@ -9,6 +10,7 @@ import { useCanvasSize } from '../hooks/setup/useCanvasSize';
 import { useCanvasNotifications } from '../hooks/setup/useCanvasNotifications';
 import { useCanvasSetupEffects } from '../hooks/setup/useCanvasSetupEffects';
 import { useCanvasActionHandlers } from '../hooks/setup/useCanvasActionHandlers';
+import DrawingModeIndicator from './DrawingModeIndicator';
 
 /**
  * Composant conteneur principal pour le canvas et ses outils
@@ -72,6 +74,9 @@ const CanvasContainer: React.FC = () => {
       
       {/* Conteneur du canvas */}
       <div ref={containerRef} className="flex-grow overflow-hidden bg-gray-50 relative">
+        {/* Indicateur de mode dessin */}
+        <DrawingModeIndicator />
+        
         {containerSize.width > 0 && containerSize.height > 0 && (
           <CanvasWorkspace 
             width={containerSize.width} 

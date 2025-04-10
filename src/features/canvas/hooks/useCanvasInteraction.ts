@@ -1,3 +1,4 @@
+// src/features/canvas/hooks/useCanvasInteraction.ts (modification)
 import { useRef, useCallback } from 'react';
 import { UseCanvasInteractionProps, CanvasInteractionResult } from '../types';
 import { useCoordinateConversion } from './useCoordinateConversion';
@@ -10,6 +11,7 @@ import { useCanvasCursor } from './useCanvasCursor';
 import { handleMouseMoveAction } from '../utils/canvasEventHandlers';
 import { useEditorStore } from '@/store';
 import { Vector2D } from '@/types/geometry';
+import { useActiveDrawing } from './useActiveDrawing'; // Nouvelle importation
 
 /**
  * Hook principal pour gérer les interactions avec le canvas
@@ -38,6 +40,9 @@ export function useCanvasInteraction(
   const { selectionBox, setSelectionBox, drawSelectionBox } = useSelectionBox(canvasRef, zoom, viewportOffset);
   const { cursor, updateCursor } = useCanvasCursor(elementDetection);
   
+  // Hook pour le dessin actif
+  const activeDrawing = useActiveDrawing(canvasRef);
+  
   const { 
     startInteraction,
     handleElementMovement,
@@ -64,11 +69,19 @@ export function useCanvasInteraction(
       // Mémoriser l'état de la touche Shift
       shiftKeyRef.current = isShiftKey;
       
-      // Démarrer l'interaction appropriée
+      // Si un mode de dessin est actif, le traiter en priorité
+      if (activeDrawing.isDrawingActive()) {
+        const drawingStarted = activeDrawing.startDrawing(position);
+        if (drawingStarted) {
+          return;
+        }
+      }
+      
+      // Sinon, démarrer l'interaction standard
       const elementId = startInteraction(position, isShiftKey);
       activeElementRef.current = elementId;
     },
-    [startInteraction]
+    [startInteraction, activeDrawing]
   );
   
   const onMouseMove = useCallback(
@@ -76,7 +89,13 @@ export function useCanvasInteraction(
       // Mettre à jour l'état de la touche Shift
       shiftKeyRef.current = isShiftKey;
       
-      // Traiter le mouvement selon l'état actuel
+      // Si un dessin est en cours, le mettre à jour
+      const drawingUpdated = activeDrawing.updateDrawing(position);
+      if (drawingUpdated) {
+        return;
+      }
+      
+      // Sinon, traiter le mouvement selon l'état actuel
       handleMouseMoveAction(
         position,
         currentOperation,
@@ -103,11 +122,18 @@ export function useCanvasInteraction(
       drawSelectionBox,
       handleElementMovement,
       handleElementResize,
-      handleElementRotation
+      handleElementRotation,
+      activeDrawing
     ]
   );
   
-  const onMouseUp = useCallback(() => {
+  const onMouseUp = useCallback((position: Vector2D) => {
+    // Finaliser un dessin en cours
+    const drawingFinished = activeDrawing.finishDrawing(position);
+    if (drawingFinished) {
+      return;
+    }
+    
     // Finaliser la sélection multiple si en cours
     if (selectionBox.start && selectionBox.end) {
       completeSelection();
@@ -119,7 +145,13 @@ export function useCanvasInteraction(
       activeElementRef.current = null;
       shiftKeyRef.current = false;
     }
-  }, [selectionBox, completeSelection, currentOperation, finishOperation]);
+  }, [
+    selectionBox, 
+    completeSelection, 
+    currentOperation, 
+    finishOperation, 
+    activeDrawing
+  ]);
   
   // Création des handlers pour les événements DOM
   const { handleMouseDown, handleMouseMove, handleMouseUp } = useMouseEvents({

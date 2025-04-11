@@ -3,7 +3,7 @@ import { produce } from 'immer';
 import { RootState } from '../types';
 import { ClipboardState } from '../types/clipboard';
 import { AnyPlanElement } from '@/types/elements';
-import { generateId } from '@/lib/utils';
+import { generateId } from '@/lib/utils/index';
 
 /**
  * Valeurs initiales pour l'état du presse-papier

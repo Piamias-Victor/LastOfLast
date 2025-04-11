@@ -12,7 +12,7 @@ export const initialEditorState: EditorState = {
   gridSize: 20,
   zoom: 1,
   viewportOffset: { x: 0, y: 0 },
-  snapToGrid: true,
+  snapToGrid: false,
   
   // Actions sont définies dans la création du slice
   toggleGrid: () => {},

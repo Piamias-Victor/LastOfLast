@@ -2,8 +2,8 @@ import { StateCreator } from 'zustand';
 import { produce } from 'immer';
 import { RootState } from '../types';
 import { ElementsState } from '../types/elements';
-import { generateId } from '@/lib/utils';
 import { AnyPlanElement } from '@/types/elements';
+import { generateId } from '@/lib/utils/index';
 
 /**
  * Valeurs initiales pour l'état des éléments

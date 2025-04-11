@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
 import { AnyPlanElement } from '@/types/elements';
 import { ResizeHandle, Vector2D } from '@/types/geometry';
-import { isPointInRect } from '@/lib/utils';
 import { RESIZE_HANDLE_SIZE } from '@/lib/constants/editor';
 import { ElementDetectionResult } from '../types';
 import { isRotationHandleAtPosition } from '../utils/rotationUtils';
 import { rotatePoint } from '@/lib/utils/rotationUtils';
+import { isPointInRect } from '@/lib/utils/index';
 
 /**
  * Hook pour la détection d'éléments sur le canvas

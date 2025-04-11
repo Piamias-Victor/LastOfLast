@@ -1,8 +1,7 @@
-// src/features/canvas/hooks/useCanvasRendering.ts (optimisation)
 'use client';
 
 import { useEffect, useCallback } from 'react';
-import { DEFAULT_EDITOR_CONFIG, EDITOR_COLORS } from '@/lib/constants/editor';
+import { EDITOR_COLORS } from '@/lib/constants/editor';
 import { AnyPlanElement } from '@/types/elements';
 import { drawMultiSelectionBox } from '@/features/drawing';
 import { Vector2D } from '@/types/geometry';
@@ -39,7 +38,14 @@ export function useCanvasRendering({
   selectionBox
 }: UseCanvasRenderingProps): void {
   // Accéder au mode de dessin
-  const { drawingMode, drawingStartPoint } = useEditorStore();
+  const { drawingMode, drawingStartPoint, canvasDimensions } = useEditorStore();
+
+  // Définition claire des deux concepts de dimensions
+  const viewportWidth = width; // Dimensions de la zone visible (l'élément canvas réel)
+  const viewportHeight = height;
+  
+  const documentWidth = canvasDimensions?.width || 1200; // Dimensions du document (le plan blanc)
+  const documentHeight = canvasDimensions?.height || 900;
 
   // Fonction de rendu optimisée
   const renderCanvas = useCallback(() => {
@@ -49,49 +55,43 @@ export function useCanvasRendering({
     const context = canvas.getContext('2d');
     if (!context) return;
 
-    // Effacer le canvas
-    context.clearRect(0, 0, width, height);
+    // Effacer tout le canvas (toute la zone visible)
+    context.clearRect(0, 0, viewportWidth, viewportHeight);
+    
+    // Dessiner un fond pour la zone du viewport
+    context.fillStyle = '#f5f5f5'; // Fond gris clair pour le viewport
+    context.fillRect(0, 0, viewportWidth, viewportHeight);
 
     // Appliquer le zoom et l'offset
     context.save();
     context.translate(viewportOffset.x, viewportOffset.y);
     context.scale(zoom, zoom);
 
-    // Dessiner le fond du canvas
+    // Dessiner le plan de pharmacie (rectangle blanc)
     context.fillStyle = '#ffffff';
-    context.fillRect(
-      0,
-      0,
-      DEFAULT_EDITOR_CONFIG.canvasSize.width,
-      DEFAULT_EDITOR_CONFIG.canvasSize.height
-    );
+    context.fillRect(0, 0, documentWidth, documentHeight);
 
-    // Dessiner la bordure du canvas
+    // Dessiner la bordure du plan
     context.strokeStyle = '#e0e0e0';
-    context.lineWidth = 1;
-    context.strokeRect(
-      0,
-      0,
-      DEFAULT_EDITOR_CONFIG.canvasSize.width,
-      DEFAULT_EDITOR_CONFIG.canvasSize.height
-    );
+    context.lineWidth = 1 / zoom; // Ajuster l'épaisseur de la ligne en fonction du zoom
+    context.strokeRect(0, 0, documentWidth, documentHeight);
 
     // Dessiner la grille si activée
     if (gridEnabled) {
       context.beginPath();
       context.strokeStyle = EDITOR_COLORS.grid;
-      context.lineWidth = 1;
-
+      context.lineWidth = 0.5 / zoom; // Ajuster l'épaisseur de la ligne en fonction du zoom
+      
       // Lignes verticales
-      for (let x = 0; x <= DEFAULT_EDITOR_CONFIG.canvasSize.width; x += gridSize) {
+      for (let x = 0; x <= documentWidth; x += gridSize) {
         context.moveTo(x, 0);
-        context.lineTo(x, DEFAULT_EDITOR_CONFIG.canvasSize.height);
+        context.lineTo(x, documentHeight);
       }
 
       // Lignes horizontales
-      for (let y = 0; y <= DEFAULT_EDITOR_CONFIG.canvasSize.height; y += gridSize) {
+      for (let y = 0; y <= documentHeight; y += gridSize) {
         context.moveTo(0, y);
-        context.lineTo(DEFAULT_EDITOR_CONFIG.canvasSize.width, y);
+        context.lineTo(documentWidth, y);
       }
 
       context.stroke();
@@ -108,8 +108,10 @@ export function useCanvasRendering({
     // Restaurer le contexte
     context.restore();
   }, [
-    width,
-    height,
+    viewportWidth,
+    viewportHeight,
+    documentWidth,
+    documentHeight,
     gridEnabled,
     gridSize,
     zoom,
@@ -134,7 +136,5 @@ export function useCanvasRendering({
     return () => {
       window.removeEventListener('forcerender', handleForceRender);
     };
-  }, [
-    renderCanvas
-  ]);
+  }, [renderCanvas]);
 }

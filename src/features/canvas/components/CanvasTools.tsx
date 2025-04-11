@@ -1,6 +1,8 @@
+// src/features/canvas/components/CanvasTools.tsx (modification)
 'use client';
 
 import React from 'react';
+import CanvasSizeDialog from './dimensions/CanvasSizeDialog';
 
 interface CanvasToolsProps {
   gridEnabled: boolean;
@@ -59,13 +61,16 @@ const CanvasTools: React.FC<CanvasToolsProps> = ({
         >
           Aimanter {snapToGrid ? 'On' : 'Off'}
         </button>
+        
+        {/* Ajouter le dialogue de redimensionnement du canvas ici */}
+        <CanvasSizeDialog 
+          className="text-xs px-4 py-1.5 rounded-full transition-colors bg-gray-100 hover:bg-gray-200 text-gray-700"
+        />
       </div>
       
       {/* Information sur les éléments */}
       <div className="flex items-center space-x-4">
-        <div className="text-xs text-gray-500">
-          {elementsCount} élément(s) | {selectedCount} sélectionné(s)
-        </div>
+        
         
         {selectedCount > 0 && (
           <div className="flex space-x-2">

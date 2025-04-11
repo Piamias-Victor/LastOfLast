@@ -1,4 +1,4 @@
-// src/features/canvas/components/CanvasContainer.tsx (suite)
+// src/features/canvas/components/CanvasContainer.tsx (modification)
 import React from 'react';
 import { useEditorStore } from '@/store';
 import CanvasTools from './CanvasTools';
@@ -11,14 +11,24 @@ import { useCanvasNotifications } from '../hooks/setup/useCanvasNotifications';
 import { useCanvasSetupEffects } from '../hooks/setup/useCanvasSetupEffects';
 import { useCanvasActionHandlers } from '../hooks/setup/useCanvasActionHandlers';
 import DrawingModeIndicator from './DrawingModeIndicator';
+import MiniMap from './navigation/MiniMap';
+
+interface CanvasContainerProps {
+  width?: number;
+  height?: number;
+}
 
 /**
  * Composant conteneur principal pour le canvas et ses outils
  */
-const CanvasContainer: React.FC = () => {
+const CanvasContainer: React.FC<CanvasContainerProps> = ({ width, height }) => {
   // Hooks pour la gestion du canvas
   const { containerRef, containerSize } = useCanvasSize();
   const { toast, showToast, hideToast } = useCanvasNotifications();
+  
+  // Effectuer les dimensions du canvas depuis les props ou le store
+  const actualWidth = width || containerSize.width;
+  const actualHeight = height || containerSize.height;
   
   // Effets de configuration
   useCanvasSetupEffects({ showToast });
@@ -77,10 +87,10 @@ const CanvasContainer: React.FC = () => {
         {/* Indicateur de mode dessin */}
         <DrawingModeIndicator />
         
-        {containerSize.width > 0 && containerSize.height > 0 && (
+        {actualWidth > 0 && actualHeight > 0 && (
           <CanvasWorkspace 
-            width={containerSize.width} 
-            height={containerSize.height} 
+            width={actualWidth} 
+            height={actualHeight} 
           />
         )}
       </div>
@@ -94,7 +104,9 @@ const CanvasContainer: React.FC = () => {
           onClose={hideToast}
         />
       )}
-      
+
+      {/* <MiniMap width={containerSize.width} height={containerSize.height} /> */}
+
       {/* Pied de page avec raccourcis */}
       <CanvasFooter />
     </div>

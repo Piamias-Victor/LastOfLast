@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
 import { Vector2D } from '@/types/geometry';
 import { useEditorStore } from '@/store';
-import { snapPointToGrid } from '@/lib/utils';
 import { useAlignment } from '@/features/alignment';
+import { snapPointToGrid } from '@/lib/utils/index';
 
 /**
  * Hook pour fournir des utilitaires de magnétisation (grille et alignement)

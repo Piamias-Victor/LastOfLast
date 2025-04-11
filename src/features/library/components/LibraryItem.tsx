@@ -3,6 +3,7 @@
 import React, { useCallback } from 'react';
 import { ElementType } from '@/types/elements';
 import { DragData } from '../types';
+import { cn } from '@/lib/utils';
 
 interface LibraryItemProps {
   type: ElementType;
@@ -15,42 +16,49 @@ interface LibraryItemProps {
  * Élément individuel dans la bibliothèque
  */
 const LibraryItem: React.FC<LibraryItemProps> = ({ type, name, description }) => {
-  // Style particulier selon le type d'élément
-  let bgColor = '';
-  let iconContent = '';
-  
   // Dimensions par défaut selon le type d'élément
   let defaultWidth = 200;
   let defaultHeight = 120;
   
+  // Configuration selon le type d'élément - utilisation de styles inline pour les couleurs
+  // qui correspondent exactement à celles du canvas
+  let backgroundColor = "#0A5B91"; // Couleur par défaut (pharmacy-primary)
+  let textIcon = "C";
+  
   switch (type) {
     case ElementType.COUNTER:
-      bgColor = 'bg-pharmacy-primary';
-      iconContent = 'C';
+      backgroundColor = "#0A5B91"; // Bleu pharmacy-primary
+      textIcon = "C";
       defaultWidth = 300;
       defaultHeight = 80;
       break;
     case ElementType.GONDOLA:
-      bgColor = 'bg-pharmacy-accent';
-      iconContent = 'G';
+      backgroundColor = "#66A5AD"; // Bleu-vert pharmacy-accent
+      textIcon = "G";
       defaultWidth = 200;
       defaultHeight = 400;
       break;
     case ElementType.END_CAP:
-      bgColor = 'bg-pharmacy-warning';
-      iconContent = 'T';
+      backgroundColor = "#F59E0B"; // Orange/Ambre
+      textIcon = "TG";
       defaultWidth = 180;
       defaultHeight = 180;
       break;
     case ElementType.BARGAIN_BIN:
-      bgColor = 'bg-pharmacy-danger';
-      iconContent = 'B';
+      backgroundColor = "#E63946"; // Rouge
+      textIcon = "BS";
       defaultWidth = 120;
       defaultHeight = 120;
       break;
+    case ElementType.WALL:
+      backgroundColor = "#1E293B"; // Gris foncé
+      textIcon = "M";
+      defaultWidth = 200;
+      defaultHeight = 20;
+      break;
     default:
-      bgColor = 'bg-gray-400';
-      iconContent = '?';
+      backgroundColor = "#475569"; // Gris
+      textIcon = "?";
   }
   
   // Gestionnaire de début de drag
@@ -70,7 +78,11 @@ const LibraryItem: React.FC<LibraryItemProps> = ({ type, name, description }) =>
     
     // Créer une image fantôme pour le drag
     const ghostElement = document.createElement('div');
-    ghostElement.classList.add(bgColor, 'rounded-md', 'p-2', 'text-white', 'text-xs');
+    ghostElement.style.backgroundColor = backgroundColor;
+    ghostElement.style.color = "white";
+    ghostElement.style.padding = "8px";
+    ghostElement.style.borderRadius = "6px";
+    ghostElement.style.fontSize = "12px";
     ghostElement.textContent = name;
     document.body.appendChild(ghostElement);
     
@@ -83,26 +95,32 @@ const LibraryItem: React.FC<LibraryItemProps> = ({ type, name, description }) =>
     
     // Nettoyer le fantôme après un court délai
     setTimeout(() => {
-      document.body.removeChild(ghostElement);
+      if (document.body.contains(ghostElement)) {
+        document.body.removeChild(ghostElement);
+      }
     }, 0);
-  }, [type, name, bgColor, defaultWidth, defaultHeight]);
+  }, [type, defaultWidth, defaultHeight, name, backgroundColor]);
   
   return (
     <div
-      className="p-4 border border-gray-100/80 bg-white rounded-lg hover:shadow-md cursor-pointer group transition-all duration-300"
+      className="p-3 border border-gray-200 rounded-lg bg-white hover:border-pharmacy-primary hover:shadow-sm cursor-grab transition-all transform hover:-translate-y-0.5"
       draggable="true"
       data-element-type={type}
       onDragStart={handleDragStart}
     >
-      <div className={`w-full h-16 ${bgColor}/95 rounded-md shadow-sm group-hover:${bgColor} flex items-center justify-center text-white font-medium relative transition-colors`}>
-        <span className="text-2xl">{iconContent}</span>
-        <div className="absolute bottom-0 left-0 w-full h-3 bg-white/10"></div>
-      </div>
-      <div className="mt-3">
-        <h3 className="text-sm font-medium text-gray-900">{name}</h3>
-        <p className="text-xs text-gray-500 mt-1 leading-relaxed">
-          {description}
-        </p>
+      <div className="flex items-center gap-3">
+        <div 
+          className="w-12 h-12 rounded-lg flex items-center justify-center text-white shadow-sm"
+          style={{ backgroundColor }}
+        >
+          <span className="text-xl font-medium">{textIcon}</span>
+        </div>
+        <div>
+          <h3 className="text-sm font-medium text-gray-700">{name}</h3>
+          <p className="text-xs text-gray-500 line-clamp-2 mt-0.5">
+            {description}
+          </p>
+        </div>
       </div>
     </div>
   );

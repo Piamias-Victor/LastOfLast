@@ -1,4 +1,3 @@
-// src/features/drawing/utils/wallDrawing.ts (nouveau fichier)
 'use client';
 
 import { WallElement } from '@/types/elements';
@@ -6,14 +5,14 @@ import { createDrawingContext } from './drawingContext';
 import { drawSelectionForElement } from './selectionDrawing';
 
 /**
- * Dessine un mur sur le canvas
+ * Dessine un mur sur le canvas avec style minimaliste Apple
  */
 export function drawWall(
   context: CanvasRenderingContext2D,
   wall: WallElement,
   isSelected: boolean = false
 ): void {
-  const { startPoint, endPoint, thickness, color } = wall;
+  const { startPoint, endPoint, thickness, color, isStructural } = wall;
   
   // Créer un contexte de dessin avec des utilitaires
   const drawContext = createDrawingContext(context);
@@ -26,6 +25,12 @@ export function drawWall(
     drawContext.transform(wall);
   }
   
+  // Ombre légère
+  context.shadowColor = 'rgba(0, 0, 0, 0.15)';
+  context.shadowBlur = 6;
+  context.shadowOffsetX = 0;
+  context.shadowOffsetY = 2;
+  
   // Dessiner le mur
   context.beginPath();
   context.strokeStyle = color;
@@ -34,6 +39,23 @@ export function drawWall(
   context.moveTo(startPoint.x, startPoint.y);
   context.lineTo(endPoint.x, endPoint.y);
   context.stroke();
+  
+  // Réinitialiser l'ombre
+  context.shadowColor = 'transparent';
+  context.shadowBlur = 0;
+  context.shadowOffsetX = 0;
+  context.shadowOffsetY = 0;
+  
+  // Pour les murs porteurs, ajouter un léger effet visuel
+  if (isStructural) {
+    context.beginPath();
+    context.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+    context.lineWidth = thickness * 0.5;
+    context.lineCap = 'round';
+    context.moveTo(startPoint.x, startPoint.y);
+    context.lineTo(endPoint.x, endPoint.y);
+    context.stroke();
+  }
   
   // Restaurer l'état du contexte avant de dessiner la sélection
   drawContext.restore();

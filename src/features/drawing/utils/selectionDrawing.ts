@@ -69,19 +69,29 @@ export function drawSelectionForElement(
   context.strokeStyle = EDITOR_COLORS.selection;
   context.lineWidth = lineWidth;
   context.setLineDash(lineDash);
-  context.strokeRect(
-    x - padding,
-    y - padding,
-    width + padding * 2,
-    height + padding * 2
-  );
+  
+  // Dessiner un cadre arrondi pour la sélection
+  const selectionRadius = 4;
+  const padX = x - padding;
+  const padY = y - padding;
+  const padWidth = width + padding * 2;
+  const padHeight = height + padding * 2;
+  
+  context.beginPath();
+  context.moveTo(padX + selectionRadius, padY);
+  context.arcTo(padX + padWidth, padY, padX + padWidth, padY + padHeight, selectionRadius);
+  context.arcTo(padX + padWidth, padY + padHeight, padX, padY + padHeight, selectionRadius);
+  context.arcTo(padX, padY + padHeight, padX, padY, selectionRadius);
+  context.arcTo(padX, padY, padX + padWidth, padY, selectionRadius);
+  context.closePath();
+  context.stroke();
   
   // Dessiner les poignées de redimensionnement seulement si l'élément n'est pas pivoté
   if (rotation === 0) {
     drawResizeHandles(context, bounds, handleSize);
   } else {
     // Si l'élément est pivoté, afficher un message de rotation
-    context.fillStyle = 'rgba(0, 0, 0, 0.7)';
+    context.fillStyle = 'rgba(10, 91, 145, 0.9)';
     context.fillRect(x + width / 2 - 100, y + height / 2 - 15, 200, 30);
     context.font = '12px sans-serif';
     context.fillStyle = '#ffffff';
@@ -128,8 +138,15 @@ export function drawResizeHandles(
   
   // Dessiner chaque poignée
   for (const handle of handles) {
+    // Poignée avec coins arrondis
+    const radius = 2;
     context.beginPath();
-    context.rect(handle.x, handle.y, handleSize, handleSize);
+    context.moveTo(handle.x + radius, handle.y);
+    context.arcTo(handle.x + handleSize, handle.y, handle.x + handleSize, handle.y + handleSize, radius);
+    context.arcTo(handle.x + handleSize, handle.y + handleSize, handle.x, handle.y + handleSize, radius);
+    context.arcTo(handle.x, handle.y + handleSize, handle.x, handle.y, radius);
+    context.arcTo(handle.x, handle.y, handle.x + handleSize, handle.y, radius);
+    context.closePath();
     context.fill();
     context.stroke();
   }
@@ -183,17 +200,17 @@ export function drawRotationHandle(
   
   // Dessiner l'icône de rotation à l'intérieur du cercle
   context.beginPath();
-  context.arc(handlePos.x, handlePos.y, halfSize / 2, 0, Math.PI * 1.5);
+  context.arc(handlePos.x, handlePos.y, halfSize * 0.7, 0, Math.PI * 1.7);
   context.strokeStyle = EDITOR_COLORS.resizeHandle;
-  context.lineWidth = 1;
+  context.lineWidth = 1.5;
   context.stroke();
   
   // Petite flèche pour indiquer la rotation
   const arrowSize = 3;
   context.beginPath();
-  context.moveTo(handlePos.x + halfSize / 2, handlePos.y);
-  context.lineTo(handlePos.x + halfSize / 2 - arrowSize, handlePos.y - arrowSize);
-  context.lineTo(handlePos.x + halfSize / 2 - arrowSize, handlePos.y + arrowSize);
+  context.moveTo(handlePos.x + halfSize * 0.5, handlePos.y);
+  context.lineTo(handlePos.x + halfSize * 0.5 - arrowSize, handlePos.y - arrowSize);
+  context.lineTo(handlePos.x + halfSize * 0.5 - arrowSize, handlePos.y + arrowSize);
   context.closePath();
   context.fillStyle = EDITOR_COLORS.resizeHandle;
   context.fill();
@@ -212,14 +229,31 @@ export function drawMultiSelectionBox(
   const width = Math.abs(endPoint.x - startPoint.x);
   const height = Math.abs(endPoint.y - startPoint.y);
   
-  // Dessiner le rectangle de sélection
-  context.fillStyle = EDITOR_COLORS.selectionFill;
-  context.fillRect(x, y, width, height);
+  // Dessiner le rectangle de sélection avec coins arrondis
+  const radius = 4;
   
-  // Dessiner la bordure du rectangle de sélection
+  // Remplissage semi-transparent
+  context.fillStyle = EDITOR_COLORS.selectionFill;
+  context.beginPath();
+  context.moveTo(x + radius, y);
+  context.arcTo(x + width, y, x + width, y + height, radius);
+  context.arcTo(x + width, y + height, x, y + height, radius);
+  context.arcTo(x, y + height, x, y, radius);
+  context.arcTo(x, y, x + width, y, radius);
+  context.closePath();
+  context.fill();
+  
+  // Dessiner la bordure
   context.strokeStyle = EDITOR_COLORS.selection;
   context.lineWidth = 2;
   context.setLineDash([5, 3]);
-  context.strokeRect(x, y, width, height);
+  context.beginPath();
+  context.moveTo(x + radius, y);
+  context.arcTo(x + width, y, x + width, y + height, radius);
+  context.arcTo(x + width, y + height, x, y + height, radius);
+  context.arcTo(x, y + height, x, y, radius);
+  context.arcTo(x, y, x + width, y, radius);
+  context.closePath();
+  context.stroke();
   context.setLineDash([]);
 }

@@ -40,25 +40,26 @@ const Toast: React.FC<ToastProps> = ({
   
   // Couleurs selon le type
   const typeClasses = {
-    info: 'bg-blue-500',
-    success: 'bg-green-500',
-    warning: 'bg-yellow-500',
-    error: 'bg-red-500'
+    info: 'bg-pharmacy-primary/90 backdrop-blur-sm',
+    success: 'bg-pharmacy-success/90 backdrop-blur-sm',
+    warning: 'bg-pharmacy-warning/90 backdrop-blur-sm',
+    error: 'bg-pharmacy-danger/90 backdrop-blur-sm'
   };
   
   return (
     <div
       className={cn(
-        'fixed bottom-4 right-4 z-50 px-4 py-2 rounded shadow-lg text-white transform transition-all duration-300',
+        'fixed bottom-6 right-6 z-50 px-5 py-3 rounded-lg shadow-lg text-white transform transition-all duration-300',
         typeClasses[type],
         visible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
       )}
     >
       <div className="flex items-center">
-        <span>{message}</span>
+        <span className="text-sm font-medium">{message}</span>
         <button
-          className="ml-4 text-white opacity-70 hover:opacity-100"
+          className="ml-6 text-white/70 hover:text-white/100 transition-opacity"
           onClick={closeToast}
+          aria-label="Fermer"
         >
           &times;
         </button>

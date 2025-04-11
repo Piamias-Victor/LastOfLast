@@ -10,9 +10,9 @@ const PropertyGroup: React.FC<PropertyGroupProps> = ({
   className = '' 
 }) => {
   return (
-    <div className={`space-y-1 ${className}`}>
-      <label className="text-xs font-medium text-gray-700">{title}</label>
-      <div className="space-y-2">
+    <div className={`space-y-3 ${className}`}>
+      <label className="text-xs font-medium text-gray-500 uppercase tracking-widest">{title}</label>
+      <div className="space-y-3">
         {children}
       </div>
     </div>

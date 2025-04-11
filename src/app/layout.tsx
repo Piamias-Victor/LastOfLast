@@ -2,7 +2,13 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+// Utiliser la police Inter avec des sous-ensembles étendus
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ['300', '400', '500'],
+  variable: '--font-inter',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: "Pharmacy Planner - Application de Merchandising Pharmaceutique",
@@ -15,8 +21,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="fr">
-      <body className={inter.className}>{children}</body>
+    <html lang="fr" className="h-full">
+      <body className={`${inter.className} h-full text-gray-900 antialiased`}>{children}</body>
     </html>
   );
 }

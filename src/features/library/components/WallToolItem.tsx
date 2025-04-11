@@ -1,4 +1,3 @@
-// src/features/library/components/WallToolItem.tsx (nouveau fichier)
 'use client';
 
 import React, { useCallback } from 'react';
@@ -21,25 +20,32 @@ const WallToolItem: React.FC = () => {
   
   // Style particulier selon l'état actif
   const isActive = drawingMode === 'wall';
-  const bgClass = isActive ? 'bg-pharmacy-primary' : 'bg-gray-300 hover:bg-gray-200';
-  const textClass = isActive ? 'text-white' : 'text-gray-800';
+  const bgClass = isActive ? 'bg-pharmacy-primary' : 'bg-white hover:shadow-md';
+  const textClass = isActive ? 'text-white' : 'text-gray-900';
+  const borderClass = isActive ? 'border-pharmacy-primary' : 'border-gray-100/80';
+  const descriptionClass = isActive ? 'text-pharmacy-primary-light' : 'text-gray-500';
   
   return (
     <div
-      className={`p-3 border rounded-md cursor-pointer group transition-colors ${bgClass}`}
+      className={`p-4 border ${borderClass} ${bgClass} rounded-lg cursor-pointer transition-all duration-300`}
       onClick={toggleWallDrawingMode}
     >
-      <div className={`w-full h-16 flex items-center justify-center font-medium relative ${textClass}`}>
-        <div className="flex flex-col items-center justify-center">
-          <span className="text-2xl">|-|</span>
-          <span className="text-sm mt-1">Mur</span>
+      <div className={`w-full flex items-center ${textClass}`}>
+        <div className="flex-shrink-0 mr-4">
+          <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 6h18"></path>
+              <path d="M3 12h18"></path>
+              <path d="M3 18h18"></path>
+            </svg>
+          </div>
         </div>
-      </div>
-      <div className="mt-2">
-        <h3 className={`text-sm font-medium ${textClass}`}>Outil Mur</h3>
-        <p className={`text-xs ${isActive ? 'text-gray-100' : 'text-gray-500'} mt-1`}>
-          {isActive ? 'Actif - Cliquez pour désactiver' : 'Cliquez pour dessiner des murs'}
-        </p>
+        <div>
+          <h3 className={`text-sm font-medium ${textClass}`}>Outil Mur</h3>
+          <p className={`text-xs mt-1 ${isActive ? 'text-white/70' : descriptionClass}`}>
+            {isActive ? 'Actif - Cliquez pour désactiver' : 'Cliquez pour dessiner des murs'}
+          </p>
+        </div>
       </div>
     </div>
   );

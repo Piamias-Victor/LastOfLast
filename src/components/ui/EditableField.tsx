@@ -31,8 +31,8 @@ const EditableField: React.FC<EditableFieldProps> = ({
   const displayValue = `${prefix}${value}${suffix}`;
 
   return (
-    <div className={`space-y-1 ${className}`}>
-      <label className="text-xs font-medium text-gray-700">{label}</label>
+    <div className={`space-y-2 ${className}`}>
+      <label className="text-xs font-medium text-gray-500 tracking-wide">{label}</label>
       {isEditing ? (
         <input 
           type="text" 
@@ -41,16 +41,15 @@ const EditableField: React.FC<EditableFieldProps> = ({
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}
           autoFocus
-          className="w-full border rounded-md py-1 px-2 text-sm"
+          className="w-full border border-gray-200 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-pharmacy-primary/20 focus:border-pharmacy-primary/30 shadow-sm"
         />
       ) : (
-        <input 
-          type="text" 
-          value={displayValue} // Utiliser value au lieu de defaultValue
+        <div 
           onClick={startEditing}
-          readOnly
-          className="w-full border rounded-md py-1 px-2 text-sm bg-gray-50 cursor-pointer hover:bg-gray-100"
-        />
+          className="w-full border border-gray-200/80 rounded-lg py-2 px-3 text-sm bg-gray-50/80 cursor-pointer hover:bg-gray-100/80 transition-colors"
+        >
+          {displayValue}
+        </div>
       )}
     </div>
   );

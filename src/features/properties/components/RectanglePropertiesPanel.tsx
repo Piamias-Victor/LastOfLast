@@ -78,103 +78,119 @@ const RectanglePropertiesPanel: React.FC<RectanglePropertiesPanelProps> = ({
   const isRotated = normalizedRotation !== 0;
 
   return (
-    <div className="p-4">
-      <h2 className="font-semibold mb-4 text-pharmacy-primary">Propriétés du Rectangle</h2>
+    <div className="p-6">
+      <h2 className="text-lg font-medium text-gray-900 mb-6 tracking-tight">Propriétés du Rectangle</h2>
       
-      <div className="space-y-3">
-        <PropertyGroup title="Nom">
-          <input 
-            type="text" 
-            value={metadata.name || ''} 
-            readOnly
-            className="w-full border rounded-md py-1 px-2 text-sm bg-gray-50"
-          />
-        </PropertyGroup>
+      <div className="space-y-8">
+        <div className="bg-white rounded-lg border border-gray-100/80 shadow-sm p-5">
+          <PropertyGroup title="Identification">
+            <input 
+              type="text" 
+              value={metadata.name || ''} 
+              readOnly
+              className="w-full border border-gray-200/80 rounded-lg py-2 px-3 text-sm bg-gray-50/80"
+            />
+          </PropertyGroup>
+        </div>
         
-        <PropertyGroup title="Position">
-          <div className="flex gap-2">
-            <EditableField 
-              label="" 
-              value={Math.round(bounds.x)} 
-              onUpdate={handlePositionXUpdate} 
-              prefix="X: "
-              className="w-1/2"
-            />
-            <EditableField 
-              label="" 
-              value={Math.round(bounds.y)} 
-              onUpdate={handlePositionYUpdate} 
-              prefix="Y: "
-              className="w-1/2"
-            />
-          </div>
-        </PropertyGroup>
-        
-        <PropertyGroup title="Dimensions">
-          <div className="flex gap-2">
-            <EditableField 
-              label="" 
-              value={Math.round(bounds.width)} 
-              onUpdate={handleWidthUpdate} 
-              prefix="L: "
-              className="w-1/2"
-            />
-            <EditableField 
-              label="" 
-              value={Math.round(bounds.height)} 
-              onUpdate={handleHeightUpdate} 
-              prefix="H: "
-              className="w-1/2"
-            />
-          </div>
-          {isRotated && (
-            <div className="mt-1 text-xs text-amber-600">
-              Remettez la rotation à 0° pour redimensionner avec les poignées
-            </div>
-          )}
-        </PropertyGroup>
-        
-        <PropertyGroup title="Rotation">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
+        <div className="bg-white rounded-lg border border-gray-100/80 shadow-sm p-5">
+          <PropertyGroup title="Position">
+            <div className="flex gap-3">
               <EditableField 
                 label="" 
-                value={Math.round(normalizedRotation)} 
-                onUpdate={handleRotationUpdate} 
-                suffix="°"
-                className="flex-1"
+                value={Math.round(bounds.x)} 
+                onUpdate={handlePositionXUpdate} 
+                prefix="X: "
+                className="w-1/2"
               />
-              <button 
-                className="px-3 py-1 text-xs bg-pharmacy-primary text-white rounded hover:bg-pharmacy-accent transition-colors"
-                onClick={handleResetRotation}
-              >
-                Réinitialiser
-              </button>
-            </div>
-            <div className="flex items-center gap-2">
-              <input 
-                type="range" 
-                min="0" 
-                max="359" 
-                value={Math.round(normalizedRotation)} 
-                onChange={handleRotationSliderChange}
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+              <EditableField 
+                label="" 
+                value={Math.round(bounds.y)} 
+                onUpdate={handlePositionYUpdate} 
+                prefix="Y: "
+                className="w-1/2"
               />
             </div>
-          </div>
-        </PropertyGroup>
+          </PropertyGroup>
+        </div>
         
-        <EditableField 
-          label="Rayon des coins" 
-          value={cornerRadius || 0} 
-          onUpdate={handleCornerRadiusUpdate} 
-        />
+        <div className="bg-white rounded-lg border border-gray-100/80 shadow-sm p-5">
+          <PropertyGroup title="Dimensions">
+            <div className="flex gap-3">
+              <EditableField 
+                label="" 
+                value={Math.round(bounds.width)} 
+                onUpdate={handleWidthUpdate} 
+                prefix="L: "
+                className="w-1/2"
+              />
+              <EditableField 
+                label="" 
+                value={Math.round(bounds.height)} 
+                onUpdate={handleHeightUpdate} 
+                prefix="H: "
+                className="w-1/2"
+              />
+            </div>
+            {isRotated && (
+              <div className="mt-3 text-xs text-amber-600 bg-amber-50 p-2 rounded-md border border-amber-100">
+                Remettez la rotation à 0° pour redimensionner avec les poignées
+              </div>
+            )}
+          </PropertyGroup>
+        </div>
         
-        <ColorDisplay label="Couleur de fond" color={backgroundColor} />
+        <div className="bg-white rounded-lg border border-gray-100/80 shadow-sm p-5">
+          <PropertyGroup title="Rotation">
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <EditableField 
+                  label="" 
+                  value={Math.round(normalizedRotation)} 
+                  onUpdate={handleRotationUpdate} 
+                  suffix="°"
+                  className="flex-1"
+                />
+                <button 
+                  className="px-3 py-2 text-xs bg-pharmacy-primary/10 text-pharmacy-primary hover:bg-pharmacy-primary/20 rounded-md transition-colors"
+                  onClick={handleResetRotation}
+                >
+                  Réinitialiser
+                </button>
+              </div>
+              <div className="flex items-center gap-2">
+                <input 
+                  type="range" 
+                  min="0" 
+                  max="359" 
+                  value={Math.round(normalizedRotation)} 
+                  onChange={handleRotationSliderChange}
+                  className="w-full h-1.5 bg-gray-200 rounded-full appearance-none cursor-pointer"
+                />
+              </div>
+            </div>
+          </PropertyGroup>
+        </div>
         
-        {borderColor && (
-          <ColorDisplay label="Couleur de bordure" color={borderColor} />
-        )}
+        <div className="bg-white rounded-lg border border-gray-100/80 shadow-sm p-5">
+          <PropertyGroup title="Apparence">
+            <EditableField 
+              label="Rayon des coins" 
+              value={cornerRadius || 0} 
+              onUpdate={handleCornerRadiusUpdate} 
+            />
+            
+            <div className="mt-4">
+              <ColorDisplay label="Couleur de fond" color={backgroundColor} />
+            </div>
+            
+            {borderColor && (
+              <div className="mt-4">
+                <ColorDisplay label="Couleur de bordure" color={borderColor} />
+              </div>
+            )}
+          </PropertyGroup>
+        </div>
       </div>
     </div>
   );

@@ -31,19 +31,19 @@ const LibraryItem: React.FC<LibraryItemProps> = ({ type, name, description }) =>
       defaultHeight = 80;
       break;
     case ElementType.GONDOLA:
-      bgColor = 'bg-pharmacy-secondary';
+      bgColor = 'bg-pharmacy-accent';
       iconContent = 'G';
       defaultWidth = 200;
       defaultHeight = 400;
       break;
     case ElementType.END_CAP:
-      bgColor = 'bg-yellow-500';
+      bgColor = 'bg-pharmacy-warning';
       iconContent = 'T';
       defaultWidth = 180;
       defaultHeight = 180;
       break;
     case ElementType.BARGAIN_BIN:
-      bgColor = 'bg-red-500';
+      bgColor = 'bg-pharmacy-danger';
       iconContent = 'B';
       defaultWidth = 120;
       defaultHeight = 120;
@@ -89,18 +89,18 @@ const LibraryItem: React.FC<LibraryItemProps> = ({ type, name, description }) =>
   
   return (
     <div
-      className="p-3 border rounded-md hover:bg-gray-50 cursor-pointer group transition-colors"
+      className="p-4 border border-gray-100/80 bg-white rounded-lg hover:shadow-md cursor-pointer group transition-all duration-300"
       draggable="true"
       data-element-type={type}
       onDragStart={handleDragStart}
     >
-      <div className={`w-full h-16 ${bgColor} rounded-md group-hover:opacity-80 flex items-center justify-center text-white font-medium relative`}>
+      <div className={`w-full h-16 ${bgColor}/95 rounded-md shadow-sm group-hover:${bgColor} flex items-center justify-center text-white font-medium relative transition-colors`}>
         <span className="text-2xl">{iconContent}</span>
-        <div className="absolute bottom-0 left-0 w-full h-3 bg-white/20"></div>
+        <div className="absolute bottom-0 left-0 w-full h-3 bg-white/10"></div>
       </div>
-      <div className="mt-2">
-        <h3 className="text-sm font-medium">{name}</h3>
-        <p className="text-xs text-gray-500 mt-1">
+      <div className="mt-3">
+        <h3 className="text-sm font-medium text-gray-900">{name}</h3>
+        <p className="text-xs text-gray-500 mt-1 leading-relaxed">
           {description}
         </p>
       </div>

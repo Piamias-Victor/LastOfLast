@@ -11,21 +11,18 @@ const CanvasFooter: React.FC = () => {
   const ctrlKey = isMac ? '⌘' : 'Ctrl';
   
   return (
-    <div className="text-xs p-2 bg-gray-100 border-t text-gray-500 flex flex-wrap justify-between">
-      <div className="mr-4">
-        <span className="font-medium">Sélection :</span> Échap = Désélectionner, Shift+Clic = Sélection multiple
+    <div className="text-xs py-2 px-6 bg-white/90 backdrop-blur-sm border-t border-gray-100/80 text-gray-500 flex flex-wrap justify-between">
+      <div className="mr-6">
+        <span className="font-medium text-gray-600">Sélection :</span> Échap = Désélectionner, Shift+Clic = Sélection multiple
       </div>
-      <div className="mr-4">
-        <span className="font-medium">Édition :</span> {ctrlKey}+C = Copier, {ctrlKey}+V = Coller, {ctrlKey}+X = Couper
+      <div className="mr-6">
+        <span className="font-medium text-gray-600">Édition :</span> {ctrlKey}+C = Copier, {ctrlKey}+V = Coller, {ctrlKey}+X = Couper
       </div>
-      <div className="mr-4">
-        <span className="font-medium">Alignement :</span> Sélectionner plusieurs éléments et utiliser les outils d'alignement
+      <div className="mr-6">
+        <span className="font-medium text-gray-600">Rotation :</span> Maintenir R + Flèches ou {ctrlKey} + Flèches (avec Shift pour 15°)
       </div>
-      <div className="mr-4">
-        <span className="font-medium">Rotation :</span> Maintenir R + Flèches ou {ctrlKey} + Flèches (avec Shift pour 15°)
-      </div>
-      <div className="mr-4">
-        <span className="font-medium">Suppression :</span> Touche Delete ou Backspace
+      <div className="mr-6">
+        <span className="font-medium text-gray-600">Suppression :</span> Touche Delete ou Backspace
       </div>
     </div>
   );

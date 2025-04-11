@@ -1,4 +1,3 @@
-// src/features/canvas/components/DrawingModeIndicator.tsx (nouveau fichier)
 'use client';
 
 import React from 'react';
@@ -23,12 +22,12 @@ const DrawingModeIndicator: React.FC = () => {
   };
   
   return (
-    <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-pharmacy-primary text-white py-2 px-4 rounded-lg shadow-lg z-30 flex items-center">
-      <span className="text-sm mr-4">
+    <div className="absolute top-6 left-1/2 transform -translate-x-1/2 bg-pharmacy-primary/90 backdrop-blur-sm text-white py-2.5 px-5 rounded-full shadow-md z-30 flex items-center">
+      <span className="text-sm font-medium mr-6">
         {modeMessages[drawingMode as keyof typeof modeMessages]}
       </span>
       <button
-        className="text-xs px-2 py-1 bg-white text-pharmacy-primary rounded hover:bg-gray-100 transition-colors"
+        className="text-xs px-3 py-1.5 bg-white text-pharmacy-primary rounded-full hover:bg-gray-50 transition-colors"
         onClick={cancelDrawingMode}
       >
         Quitter le mode dessin

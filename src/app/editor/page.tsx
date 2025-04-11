@@ -5,18 +5,18 @@ import { LibraryPanel } from "@/features/library";
 
 export default function EditorPage() {
   return (
-    <main className="flex min-h-screen flex-col">
-      <header className="flex h-14 items-center border-b px-4 lg:px-6 bg-white shadow-sm">
+    <main className="flex h-screen flex-col bg-gray-50">
+      <header className="flex h-14 items-center border-b border-gray-100/80 px-6 lg:px-8 bg-white/90 backdrop-blur-sm shadow-sm z-10">
         <Link
           href="/"
-          className="flex items-center gap-2 font-semibold text-lg text-pharmacy-primary"
+          className="flex items-center gap-2 font-medium text-lg text-pharmacy-primary tracking-tight"
         >
           <span>Pharmacy Planner</span>
         </Link>
-        <nav className="ml-auto flex gap-4 sm:gap-6">
+        <nav className="ml-auto flex gap-8">
           <Link
             href="/"
-            className="text-sm font-medium hover:text-pharmacy-primary hover:underline underline-offset-4 transition-colors"
+            className="text-sm font-medium text-gray-500 hover:text-pharmacy-primary transition-colors"
           >
             Accueil
           </Link>
@@ -24,17 +24,17 @@ export default function EditorPage() {
       </header>
       <div className="flex h-[calc(100vh-3.5rem)] w-full">
         {/* Sidebar gauche pour les outils et éléments */}
-        <div className="w-64 border-r bg-white shadow-sm overflow-auto">
+        <div className="w-72 border-r border-gray-100/80 bg-white overflow-auto">
           <LibraryPanel />
         </div>
         
         {/* Zone principale pour le canvas */}
-        <div className="flex-1 overflow-hidden relative bg-gray-100">
+        <div className="flex-1 overflow-hidden relative bg-gray-50/80">
           <Editor />
         </div>
         
         {/* Sidebar droite pour les propriétés */}
-        <div className="w-64 border-l bg-white shadow-sm overflow-auto">
+        <div className="w-72 border-l border-gray-100/80 bg-white overflow-auto">
           <PropertiesPanel />
         </div>
       </div>
